@@ -1,4 +1,4 @@
-package com.example.reminder_android.ui.theme
+package com.example.reminder_android.presentation.theme
 
 import android.app.Activity
 import android.os.Build
