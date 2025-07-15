@@ -1,4 +1,4 @@
-package com.example.reminder_android.presentation
+package com.example.reminder_android
 
 object Constants {
     const val NAVIGATION_HOME = "home"

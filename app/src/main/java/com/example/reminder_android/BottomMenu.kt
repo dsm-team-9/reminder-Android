@@ -1,12 +1,11 @@
-package com.example.reminder_android.presentation
+package com.example.reminder_android
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import com.example.reminder_android.R
-import com.example.reminder_android.presentation.Constants.NAVIGATION_BOOKMARK
-import com.example.reminder_android.presentation.Constants.NAVIGATION_HOME
-import com.example.reminder_android.presentation.Constants.NAVIGATION_MY_PAGE
-import com.example.reminder_android.presentation.Constants.NAVIGATION_RECRUITMENTS
+import com.example.reminder_android.Constants.NAVIGATION_BOOKMARK
+import com.example.reminder_android.Constants.NAVIGATION_HOME
+import com.example.reminder_android.Constants.NAVIGATION_MY_PAGE
+import com.example.reminder_android.Constants.NAVIGATION_RECRUITMENTS
 
 sealed class BottomMenu(
     val route: String,
