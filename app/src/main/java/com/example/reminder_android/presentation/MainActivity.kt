@@ -34,8 +34,11 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.reminder_android.BottomMenu
+import com.example.reminder_android.presentation.feature.main.chat.ChatScreen
 import com.example.reminder_android.presentation.feature.main.home.HomeDetailScreen
 import com.example.reminder_android.presentation.feature.main.home.HomeScreen
+import com.example.reminder_android.presentation.feature.main.my.MyScreen
+import com.example.reminder_android.presentation.feature.main.social.SocialScreen
 import com.example.reminder_android.presentation.feature.signin.SignInScreen
 import com.example.reminder_android.presentation.feature.signup.SignUpScreen
 import com.example.reminder_android.presentation.theme.ReminderAndroidTheme
@@ -131,12 +134,12 @@ private fun BaseApp() {
                 NavHost(navController = mainAppNavController, startDestination = BottomMenu.HOME.route) {
                     composable(BottomMenu.MY.route) {
                         Box(modifier = Modifier.padding(paddingValues)) {
-                            TestScreen(navController = mainAppNavController, screenName = stringResource(id = BottomMenu.MY.title))
+                            MyScreen(navController = mainAppNavController)
                         }
                     }
                     composable(BottomMenu.SOCIAL.route) {
                         Box(modifier = Modifier.padding(paddingValues)) {
-                            TestScreen(navController = mainAppNavController, screenName = stringResource(id = BottomMenu.SOCIAL.title))
+                            SocialScreen(navController = mainAppNavController)
                         }
                     }
                     composable(BottomMenu.HOME.route) {
@@ -146,14 +149,14 @@ private fun BaseApp() {
                     }
                     composable(BottomMenu.CHAT.route) {
                         Box(modifier = Modifier.padding(paddingValues)) {
-                            TestScreen(navController = mainAppNavController, screenName = stringResource(id = BottomMenu.CHAT.title))
+                            ChatScreen(navController = mainAppNavController)
                         }
+                    }
+                    composable(AppNavigationItem.HomeDetail.route) {
+                        HomeDetailScreen()
                     }
                 }
             }
-        }
-        composable(AppNavigationItem.HomeDetail.route) {
-            HomeDetailScreen()
         }
     }
 }
