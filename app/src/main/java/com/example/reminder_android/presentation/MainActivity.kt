@@ -32,6 +32,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.reminder_android.BottomMenu
 import com.example.reminder_android.R
+import com.example.reminder_android.presentation.feature.signin.SignInScreen
 import com.example.reminder_android.presentation.feature.signup.SignUpScreen
 import com.example.reminder_android.presentation.theme.ReminderAndroidTheme
 
@@ -42,20 +43,21 @@ class MainActivity : ComponentActivity() {
         setContent {
             ReminderAndroidTheme {
                 val navController = rememberNavController()
-                Scaffold(
-                    modifier = Modifier.fillMaxSize(),
-                    bottomBar = { BottomNavigationBar(navController = navController) },
-                    floatingActionButton = {
-                        FloatingActionButton(onClick = { /* TODO: Handle FAB click */ }) {
-                            Icon(Icons.Filled.Add, "Add") // Using Material Icons Add icon
-                        }
-                    },
-                    floatingActionButtonPosition = FabPosition.Center
-                ) {
-                    Box(modifier = Modifier.padding(it)) {
-                        Navigation(navController = navController)
-                    }
-                }
+                BaseApp()
+//                Scaffold(
+//                    modifier = Modifier.fillMaxSize(),
+//                    bottomBar = { BottomNavigationBar(navController = navController) },
+//                    floatingActionButton = {
+//                        FloatingActionButton(onClick = { /* TODO: Handle FAB click */ }) {
+//                            Icon(Icons.Filled.Add, "Add") // Using Material Icons Add icon
+//                        }
+//                    },
+//                    floatingActionButtonPosition = FabPosition.Center
+//                ) {
+//                    Box(modifier = Modifier.padding(it)) {
+//                        Navigation(navController = navController)
+//                    }
+//                }
             }
         }
     }
@@ -63,7 +65,7 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun Navigation(navController: NavHostController) {
-    NavHost(navController = navController, startDestination = BottomMenu.Home.route) {
+    NavHost(navController = navController, startDestination = AppNavigationItem.SignIn.route) {
         composable(BottomMenu.Home.route) {
             TestScreen(navController = navController, screenName = stringResource(id = BottomMenu.Home.title))
         }
@@ -75,9 +77,6 @@ fun Navigation(navController: NavHostController) {
         }
         composable(BottomMenu.MyPage.route) {
             TestScreen(navController = navController, screenName = stringResource(id = BottomMenu.MyPage.title))
-        }
-        composable(AppNavigationItem.SignIn.route) {
-
         }
     }
 }
@@ -125,7 +124,7 @@ private fun BaseApp() {
     val navController = rememberNavController()
     NavHost(navController = navController, startDestination = AppNavigationItem.SignIn.route) {
         composable(AppNavigationItem.SignIn.route) {
-
+            SignInScreen(navController = navController)
         }
         composable(AppNavigationItem.SignUp1.route) {
             SignUpScreen(navController = navController)
