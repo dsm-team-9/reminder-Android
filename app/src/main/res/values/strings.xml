@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">reminder-Android</string>
-    <string name="home">Home</string>
-    <string name="recruitment">Recruitments</string>
-    <string name="bookmark">Bookmark</string>
-    <string name="my_page">My Page</string>
+    <string name="my">my</string>
+    <string name="social">social</string>
+    <string name="home">home</string>
+    <string name="chat">chat</string>
 </resources>

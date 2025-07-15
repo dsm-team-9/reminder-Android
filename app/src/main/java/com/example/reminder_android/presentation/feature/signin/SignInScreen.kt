@@ -92,12 +92,15 @@ fun SignInScreen(
             text = buildAnnotatedString {
                 append("계정이 없으신가요? ")
 
-                pushStyle(SpanStyle(color = Color.Blue, fontWeight = FontWeight.Bold))
+                pushStyle(SpanStyle(color = Color(0xFF9000FF), fontWeight = FontWeight.Bold))
                 append("회원가입")
             },
-            modifier = Modifier.clickable {
-                navController.navigate(AppNavigationItem.SignUp1.route)
-            },
+            modifier = Modifier
+                .background(Color.LightGray) // Add background to visualize clickable area
+                .clickable {
+                    Log.d("SignInScreen", "Text clickable triggered!")
+                    navController.navigate(AppNavigationItem.SignUp1.route)
+                },
             style = TextStyle(color = Color.Black) // 기본 텍스트 스타일
         )
     }

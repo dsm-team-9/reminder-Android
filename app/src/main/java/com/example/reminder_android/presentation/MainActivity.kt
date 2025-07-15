@@ -4,19 +4,20 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.BottomAppBar
+import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.FabPosition
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -25,16 +26,15 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.reminder_android.BottomMenu
-import com.example.reminder_android.R
 import com.example.reminder_android.presentation.feature.signin.SignInScreen
 import com.example.reminder_android.presentation.feature.signup.SignUpScreen
 import com.example.reminder_android.presentation.theme.ReminderAndroidTheme
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,41 +42,8 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             ReminderAndroidTheme {
-                val navController = rememberNavController()
                 BaseApp()
-//                Scaffold(
-//                    modifier = Modifier.fillMaxSize(),
-//                    bottomBar = { BottomNavigationBar(navController = navController) },
-//                    floatingActionButton = {
-//                        FloatingActionButton(onClick = { /* TODO: Handle FAB click */ }) {
-//                            Icon(Icons.Filled.Add, "Add") // Using Material Icons Add icon
-//                        }
-//                    },
-//                    floatingActionButtonPosition = FabPosition.Center
-//                ) {
-//                    Box(modifier = Modifier.padding(it)) {
-//                        Navigation(navController = navController)
-//                    }
-//                }
             }
-        }
-    }
-}
-
-@Composable
-fun Navigation(navController: NavHostController) {
-    NavHost(navController = navController, startDestination = AppNavigationItem.SignIn.route) {
-        composable(BottomMenu.Home.route) {
-            TestScreen(navController = navController, screenName = stringResource(id = BottomMenu.Home.title))
-        }
-        composable(BottomMenu.Recruitments.route) {
-            TestScreen(navController = navController, screenName = stringResource(id = BottomMenu.Recruitments.title))
-        }
-        composable(BottomMenu.Bookmark.route) {
-            TestScreen(navController = navController, screenName = stringResource(id = BottomMenu.Bookmark.title))
-        }
-        composable(BottomMenu.MyPage.route) {
-            TestScreen(navController = navController, screenName = stringResource(id = BottomMenu.MyPage.title))
         }
     }
 }
@@ -84,10 +51,10 @@ fun Navigation(navController: NavHostController) {
 @Composable
 fun BottomNavigationBar(navController: NavController) {
     val items = listOf(
-        BottomMenu.Home,
-        BottomMenu.Recruitments,
-        BottomMenu.Bookmark,
-        BottomMenu.MyPage,
+        BottomMenu.MY,
+        BottomMenu.SOCIAL,
+        BottomMenu.CHAT,
+        BottomMenu.HOME,
     )
 
     BottomAppBar (
@@ -113,11 +80,19 @@ fun BottomNavigationBar(navController: NavController) {
                         launchSingleTop = true
                         restoreState = true
                     }
-                }
+                },
+                colors = NavigationBarItemDefaults.colors(
+                    selectedIconColor = Color(0xFF5F6074),
+                    unselectedIconColor = Color.Gray,
+                    selectedTextColor = Color(0xFF3F414E),
+                    unselectedTextColor = Color(0xFF3F414E),
+                    indicatorColor = Color.Transparent
+                )
             )
         }
     }
 }
+
 
 @Composable
 private fun BaseApp() {
@@ -129,6 +104,45 @@ private fun BaseApp() {
         composable(AppNavigationItem.SignUp1.route) {
             SignUpScreen(navController = navController)
         }
+        composable(BottomMenu.MY.route) {
+            val mainAppNavController = rememberNavController()
+            Scaffold(
+                modifier = Modifier.fillMaxSize(),
+                bottomBar = {
+                    BottomAppBar {  }
+                    BottomNavigationBar(navController = mainAppNavController)
+                },
+                floatingActionButton = {
+                    FloatingActionButton(onClick = { /* TODO: Handle FAB click */ }) {
+                        Icon(Icons.Filled.Add, "Add") // Using Material Icons Add icon
+                    }
+                },
+                floatingActionButtonPosition = FabPosition.Center,
+            ) { paddingValues ->
+                NavHost(navController = mainAppNavController, startDestination = BottomMenu.HOME.route) {
+                    composable(BottomMenu.MY.route) {
+                        Box(modifier = Modifier.padding(paddingValues)) {
+                            TestScreen(navController = mainAppNavController, screenName = stringResource(id = BottomMenu.MY.title))
+                        }
+                    }
+                    composable(BottomMenu.SOCIAL.route) {
+                        Box(modifier = Modifier.padding(paddingValues)) {
+                            TestScreen(navController = mainAppNavController, screenName = stringResource(id = BottomMenu.SOCIAL.title))
+                        }
+                    }
+                    composable(BottomMenu.HOME.route) {
+                        Box(modifier = Modifier.padding(paddingValues)) {
+                            TestScreen(navController = mainAppNavController, screenName = stringResource(id = BottomMenu.HOME.title))
+                        }
+                    }
+                    composable(BottomMenu.CHAT.route) {
+                        Box(modifier = Modifier.padding(paddingValues)) {
+                            TestScreen(navController = mainAppNavController, screenName = stringResource(id = BottomMenu.CHAT.title))
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -137,7 +151,9 @@ fun TestScreen(
     navController: NavController,
     screenName: String,
 ) {
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(modifier = Modifier
+        .fillMaxSize()
+        .background(Color.White)) {
         Text(text = screenName)
     }
 }

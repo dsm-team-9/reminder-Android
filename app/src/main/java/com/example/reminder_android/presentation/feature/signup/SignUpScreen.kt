@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.sp
 import androidx.core.provider.FontsContractCompat.Columns
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.reminder_android.BottomMenu
 import com.example.reminder_android.R
 import com.example.reminder_android.ReminderOutlinedTextField
 import com.example.reminder_android.presentation.AppNavigationItem
@@ -83,7 +84,7 @@ fun SignUpScreen(
         Spacer(modifier = Modifier.padding(bottom = 32.dp))
         TextButton(
             modifier = Modifier.background(color = Color(0xFF5F6074), shape = RoundedCornerShape(10.dp)),
-            onClick = {},
+            onClick = { navController.navigate(BottomMenu.MY.route) },
         ) {
             Text(
                 modifier = Modifier.fillMaxWidth(),
@@ -98,11 +99,11 @@ fun SignUpScreen(
             text = buildAnnotatedString {
                 append("이미 계정이 있으신가요? ")
 
-                pushStyle(SpanStyle(color = Color.Blue, fontWeight = FontWeight.Bold))
+                pushStyle(SpanStyle(color = Color(0xFF9000FF), fontWeight = FontWeight.Bold))
                 append("로그인")
             },
             modifier = Modifier.clickable {
-                navController.navigate(AppNavigationItem.SignUp1.route)
+                navController.navigate(AppNavigationItem.SignIn.route)
             },
             style = TextStyle(color = Color.Black) // 기본 텍스트 스타일
         )
