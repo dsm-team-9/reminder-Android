@@ -39,6 +39,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.reminder_android.BottomMenu
 import com.example.reminder_android.ReminderOutlinedTextField
 import com.example.reminder_android.presentation.AppNavigationItem
 
@@ -77,7 +78,7 @@ fun SignInScreen(
         Spacer(modifier = Modifier.padding(bottom = 32.dp))
         TextButton(
             modifier = Modifier.background(color = Color(0xFF5F6074), shape = RoundedCornerShape(10.dp)),
-            onClick = {},
+            onClick = { navController.navigate(BottomMenu.MY.route) },
         ) {
             Text(
                 modifier = Modifier.fillMaxWidth(),

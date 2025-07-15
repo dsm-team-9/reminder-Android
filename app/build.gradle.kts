@@ -67,5 +67,5 @@ dependencies {
 
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.material.icons.extended.v160)
-    implementation(libs.compose)
+    implementation("io.coil-kt:coil-compose:2.4.0")
 }

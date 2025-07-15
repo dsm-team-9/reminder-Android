@@ -7,7 +7,9 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.BottomAppBar
@@ -24,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
@@ -31,6 +34,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.reminder_android.BottomMenu
+import com.example.reminder_android.presentation.feature.main.home.HomeDetailScreen
+import com.example.reminder_android.presentation.feature.main.home.HomeScreen
 import com.example.reminder_android.presentation.feature.signin.SignInScreen
 import com.example.reminder_android.presentation.feature.signup.SignUpScreen
 import com.example.reminder_android.presentation.theme.ReminderAndroidTheme
@@ -113,7 +118,11 @@ private fun BaseApp() {
                     BottomNavigationBar(navController = mainAppNavController)
                 },
                 floatingActionButton = {
-                    FloatingActionButton(onClick = { /* TODO: Handle FAB click */ }) {
+                    FloatingActionButton(
+                        modifier = Modifier.offset(y = 56.dp),
+                        onClick = { /* TODO: Handle FAB click */ },
+                        shape = CircleShape,
+                    ) {
                         Icon(Icons.Filled.Add, "Add") // Using Material Icons Add icon
                     }
                 },
@@ -132,7 +141,7 @@ private fun BaseApp() {
                     }
                     composable(BottomMenu.HOME.route) {
                         Box(modifier = Modifier.padding(paddingValues)) {
-                            TestScreen(navController = mainAppNavController, screenName = stringResource(id = BottomMenu.HOME.title))
+                            HomeScreen(navController = navController)
                         }
                     }
                     composable(BottomMenu.CHAT.route) {
@@ -142,6 +151,9 @@ private fun BaseApp() {
                     }
                 }
             }
+        }
+        composable(AppNavigationItem.HomeDetail.route) {
+            HomeDetailScreen()
         }
     }
 }
