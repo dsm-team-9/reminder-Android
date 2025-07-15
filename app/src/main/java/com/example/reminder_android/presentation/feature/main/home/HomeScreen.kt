@@ -79,7 +79,7 @@ fun HomeScreen(
 }
 
 @Composable
-fun MuseumItem(
+internal fun MuseumItem(
     modifier: Modifier = Modifier,
     imageUrl: String,
     itemCount: Int,
@@ -143,7 +143,7 @@ fun MuseumItem(
 }
 
 @Composable
-fun TopProfile(
+internal fun TopProfile(
     modifier: Modifier = Modifier,
     iconSize: Dp = 40.dp,
     title: String,
@@ -177,11 +177,11 @@ fun TopProfile(
 }
 
 @Composable
-fun ToggleMajors(
-    onMajorSelected: (String) -> Unit
+internal fun ToggleMajors(
+    onMajorSelected: (String) -> Unit,
 ) {
-    val majors = listOf("전체", "수학", "과학", "역사", "사회", "국어")
-    var selectedMajor by remember { mutableStateOf("전체") }
+    val majors = listOf("all", "수학", "과학", "역사", "사회", "국어")
+    var selectedMajor by remember { mutableStateOf("all") }
 
     FlowRow(
         modifier = Modifier.padding(vertical = 16.dp),
@@ -202,7 +202,7 @@ fun ToggleMajors(
 }
 
 @Composable
-fun MajorButton(
+private fun MajorButton(
     major: String,
     selected: Boolean,
     onClick: (String) -> Unit
@@ -214,11 +214,11 @@ fun MajorButton(
             contentColor = if (selected) Color.White else Color.Black
         ),
         shape = RoundedCornerShape(16.dp),
-        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp)
+        contentPadding = PaddingValues(horizontal = 1.dp, vertical = 1.dp)
     ) {
         Text(
             text = major,
-            fontSize = 12.sp,
+            fontSize = 11.sp,
         )
     }
 }

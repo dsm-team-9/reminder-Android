@@ -58,8 +58,8 @@ fun BottomNavigationBar(navController: NavController) {
     val items = listOf(
         BottomMenu.MY,
         BottomMenu.SOCIAL,
-        BottomMenu.CHAT,
         BottomMenu.HOME,
+        BottomMenu.CHAT,
     )
 
     BottomAppBar (
@@ -141,7 +141,7 @@ private fun BaseApp() {
                     }
                     composable(BottomMenu.HOME.route) {
                         Box(modifier = Modifier.padding(paddingValues)) {
-                            HomeScreen(navController = navController)
+                            HomeScreen(navController = mainAppNavController)
                         }
                     }
                     composable(BottomMenu.CHAT.route) {
