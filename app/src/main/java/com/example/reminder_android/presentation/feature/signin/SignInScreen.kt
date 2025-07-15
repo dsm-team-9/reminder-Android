@@ -100,7 +100,7 @@ fun SignInScreen(
                 .background(Color.LightGray) // Add background to visualize clickable area
                 .clickable {
                     Log.d("SignInScreen", "Text clickable triggered!")
-                    navController.navigate(AppNavigationItem.SignUp1.route)
+                    navController.navigate(AppNavigationItem.SignUp.route)
                 },
             style = TextStyle(color = Color.Black) // 기본 텍스트 스타일
         )

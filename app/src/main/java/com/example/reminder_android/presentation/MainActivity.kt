@@ -4,7 +4,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
@@ -34,11 +33,14 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.reminder_android.BottomMenu
+import com.example.reminder_android.presentation.feature.main.chat.ChatAIDetailScreen
 import com.example.reminder_android.presentation.feature.main.chat.ChatScreen
 import com.example.reminder_android.presentation.feature.main.home.HomeDetailScreen
+import com.example.reminder_android.presentation.feature.main.home.HomeExhibitsDetailScreen
 import com.example.reminder_android.presentation.feature.main.home.HomeScreen
 import com.example.reminder_android.presentation.feature.main.my.MyScreen
 import com.example.reminder_android.presentation.feature.main.social.SocialScreen
+import com.example.reminder_android.presentation.feature.main.upLoadExhibit.UpLoadExhibit
 import com.example.reminder_android.presentation.feature.signin.SignInScreen
 import com.example.reminder_android.presentation.feature.signup.SignUpScreen
 import com.example.reminder_android.presentation.theme.ReminderAndroidTheme
@@ -109,7 +111,7 @@ private fun BaseApp() {
         composable(AppNavigationItem.SignIn.route) {
             SignInScreen(navController = navController)
         }
-        composable(AppNavigationItem.SignUp1.route) {
+        composable(AppNavigationItem.SignUp.route) {
             SignUpScreen(navController = navController)
         }
         composable(BottomMenu.MY.route) {
@@ -153,22 +155,19 @@ private fun BaseApp() {
                         }
                     }
                     composable(AppNavigationItem.HomeDetail.route) {
-                        HomeDetailScreen()
+                        HomeDetailScreen(navController = navController)
+                    }
+                    composable(AppNavigationItem.HomeExhibitsDetail.route) {
+                        HomeExhibitsDetailScreen(navController = mainAppNavController)
+                    }
+                    composable(AppNavigationItem.ChatAIDetail.route) {
+                        ChatAIDetailScreen(navController = mainAppNavController)
+                    }
+                    composable(AppNavigationItem.UpLoadExhibit.route) {
+                        UpLoadExhibit(navController = mainAppNavController)
                     }
                 }
             }
         }
-    }
-}
-
-@Composable
-fun TestScreen(
-    navController: NavController,
-    screenName: String,
-) {
-    Box(modifier = Modifier
-        .fillMaxSize()
-        .background(Color.White)) {
-        Text(text = screenName)
     }
 }

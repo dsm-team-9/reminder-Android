@@ -3,9 +3,13 @@ package com.example.reminder_android.presentation
 sealed class AppNavigationItem(val route: String) {
     data object SignIn : AppNavigationItem("signIn")
 
-    data object SignUp1 : AppNavigationItem("signUp1")
+    data object SignUp : AppNavigationItem("signUp")
 
     data object HomeDetail : AppNavigationItem("HomeDetail")
 
+    data object HomeExhibitsDetail : AppNavigationItem("HomeExhibitsDetail")
 
+    data object ChatAIDetail : AppNavigationItem("ChatAIDetail")
+
+    data object UpLoadExhibit : AppNavigationItem("UpLoadExhibit")
 }
