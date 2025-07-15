@@ -1,5 +1,6 @@
 package com.example.reminder_android.data.api
 
+import com.example.reminder_android.data.response.SearchUserNameResponse
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -13,19 +14,17 @@ interface SocialApi {
     // 언팔로우
 
     @POST("/api/users/{id}/follow")
-    fun followUser(
+    suspend fun followUser(
         @Path("id") userId: Long,
     )
 
     @DELETE("/api/users/{id}/follow")
-    fun unFollowUser(
+    suspend fun unFollowUser(
         @Path("id") userId: Long,
     )
 
     @GET("/api/users/search")
-    fun searchUserName(
+    suspend fun searchUserName(
         @Query("name") name: String,
-    )
-
-
+    ): List<SearchUserNameResponse>
 }
