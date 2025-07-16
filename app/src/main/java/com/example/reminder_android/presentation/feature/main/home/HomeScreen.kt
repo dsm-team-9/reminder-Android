@@ -1,6 +1,7 @@
 package com.example.reminder_android.presentation.feature.main.home
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -46,6 +47,7 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontSynthesis
 import androidx.navigation.NavController
 import androidx.navigation.navOptions
+import com.example.reminder_android.ToggleMajors
 import com.example.reminder_android.presentation.AppNavigationItem
 
 @Composable
@@ -61,7 +63,7 @@ fun HomeScreen(
         )
         Column(
             modifier = Modifier
-                .background(color = Color(0xFFD9D9D9))
+                .background(color = Color(0xFFF2F2F2))
                 .fillMaxSize()
                 .padding(start = 30.dp, end = 30.dp),
         ) {
@@ -173,52 +175,5 @@ internal fun TopProfile(
                 color = Color.Black,
             )
         }
-    }
-}
-
-@Composable
-internal fun ToggleMajors(
-    onMajorSelected: (String) -> Unit,
-) {
-    val majors = listOf("all", "수학", "과학", "역사", "사회", "국어")
-    var selectedMajor by remember { mutableStateOf("all") }
-
-    FlowRow(
-        modifier = Modifier.padding(vertical = 16.dp),
-        horizontalArrangement = Arrangement.spacedBy(4.dp),
-        verticalArrangement = Arrangement.spacedBy(4.dp),
-    ) {
-        majors.forEach { major ->
-            MajorButton(
-                major = major,
-                selected = selectedMajor == major,
-                onClick = {
-                    selectedMajor = it
-                    onMajorSelected(it) // This is where you would trigger the filtering
-                }
-            )
-        }
-    }
-}
-
-@Composable
-private fun MajorButton(
-    major: String,
-    selected: Boolean,
-    onClick: (String) -> Unit
-) {
-    Button(
-        onClick = { onClick(major) },
-        colors = ButtonDefaults.buttonColors(
-            containerColor = if (selected) Color.Black else Color.White,
-            contentColor = if (selected) Color.White else Color.Black
-        ),
-        shape = RoundedCornerShape(16.dp),
-        contentPadding = PaddingValues(horizontal = 1.dp, vertical = 1.dp)
-    ) {
-        Text(
-            text = major,
-            fontSize = 11.sp,
-        )
     }
 }

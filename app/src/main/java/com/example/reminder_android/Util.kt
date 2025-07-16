@@ -1,5 +1,9 @@
 package com.example.reminder_android
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -19,6 +23,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -79,4 +84,55 @@ internal fun ReminderOutlinedTextField(
         },
         singleLine = true,
     )
+}
+
+@Composable
+internal fun ToggleMajors(
+    onMajorSelected: (String) -> Unit,
+) {
+    val majors = listOf("all", "수학", "과학", "역사", "사회", "국어")
+    var selectedMajor by remember { mutableStateOf("all") }
+
+    FlowRow(
+        modifier = Modifier.padding(vertical = 16.dp),
+        horizontalArrangement = Arrangement.spacedBy(4.dp),
+        verticalArrangement = Arrangement.spacedBy(4.dp),
+    ) {
+        majors.forEach { major ->
+            MajorButton(
+                major = major,
+                selected = selectedMajor == major,
+                onClick = {
+                    selectedMajor = it
+                    onMajorSelected(it) // This is where you would trigger the filtering
+                }
+            )
+        }
+    }
+}
+
+@Composable
+private fun MajorButton(
+    major: String,
+    selected: Boolean,
+    onClick: (String) -> Unit
+) {
+    Text(
+        text = major,
+        fontSize = 20.sp,
+        color = if (selected) Color.White else Color.Black,
+        modifier = Modifier
+            .clip(RoundedCornerShape(16.dp))
+            .background(color = if (selected) Color.Black else Color.White)
+            .clickable { onClick(major) }
+            .padding(horizontal = 8.dp, vertical = 4.dp)
+    )
+}
+
+enum class Major {
+    수학,
+    과학,
+    역사,
+    사회,
+    국어
 }

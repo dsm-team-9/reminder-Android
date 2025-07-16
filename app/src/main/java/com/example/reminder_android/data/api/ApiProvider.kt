@@ -9,9 +9,15 @@ import retrofit2.converter.gson.GsonConverterFactory
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 
+import com.example.reminder_android.BuildConfig
+import com.example.reminder_android.data.api.CardApi
+import com.example.reminder_android.data.api.HomeApi
+import com.example.reminder_android.data.api.MyPageApi
+import com.example.reminder_android.data.api.SocialApi
+
 object ApiProvider {
 
-    private const val BASE_URL = "https://172.20.10.6/" // Replace with your actual base URL
+    private val BASE_URL = BuildConfig.BASE_URL
 
     private lateinit var sharedPreferences: SharedPreferences
 
@@ -50,5 +56,9 @@ object ApiProvider {
         }
     }
 
-    private val authApi: AuthApi = getRetrofit().create(AuthApi::class.java)
+    val authApi: AuthApi = getRetrofit().create(AuthApi::class.java)
+    val cardApi: CardApi = getRetrofit().create(CardApi::class.java)
+    val homeApi: HomeApi = getRetrofit().create(HomeApi::class.java)
+    val myPageApi: MyPageApi = getRetrofit().create(MyPageApi::class.java)
+    val socialApi: SocialApi = getRetrofit().create(SocialApi::class.java)
 }
