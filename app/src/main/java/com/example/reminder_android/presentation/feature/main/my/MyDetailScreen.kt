@@ -1,8 +1,8 @@
 package com.example.reminder_android.presentation.feature.main.my
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,61 +11,65 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import coil.compose.AsyncImage
+import com.example.reminder_android.Category
+import com.example.reminder_android.CategoryImageOnDemand
 import com.example.reminder_android.R
 import com.example.reminder_android.presentation.feature.main.home.TopProfile
-import org.jetbrains.annotations.Async
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.TextField
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.text.style.LineHeightStyle
-
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun MyDetailScreen(
     navController: NavController
 ) {
+    var category: List<Category> = listOf(Category(name = "과학", bgColor = Color.Blue, textColor = Color.White, imageUrl = ""), Category(name = "과학", bgColor = Color.Blue, textColor = Color.White, imageUrl = ""), Category(name = "과학", bgColor = Color.Blue, textColor = Color.White, imageUrl = ""))
+
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
         TopProfile(
             title = "홍길동"
         )
+        CategoryImageOnDemand(
+            category
+        )
         PotteryDetailCard(
-            potteryImage = painterResource(R.drawable.testimg)
-        ) { }
-
+            modifier = Modifier
+                .weight(1f)
+                .background(color = Color(0xFFD9D9D9))
+                .padding(vertical = 12.dp, horizontal = 20.dp),
+            potteryImage = painterResource(R.drawable.testimg),
+            onConfirm = {},
+        )
     }
 }
 
 @Composable
 fun PotteryDetailCard(
-    userName: String = "홍길동님",
+    modifier: Modifier = Modifier,
     potteryImage: Painter,
     title: String = "빗살무늬 토기",
     description: String = """
@@ -77,93 +81,107 @@ fun PotteryDetailCard(
     """.trimIndent(),
     onConfirm: () -> Unit
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp)
+    var isEditing by remember { mutableStateOf(false) }
+    var editedDescription by remember { mutableStateOf(description) }
+
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .background(color = Color.White, shape = RoundedCornerShape(20.dp))
     ) {
-        // 상단 사용자 정보와 타이틀
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
+        Column(
+            modifier = Modifier
+                .padding(16.dp)
         ) {
-            Box(
-                modifier = Modifier
-                    .size(32.dp)
-                    .background(color = Color.LightGray, shape = CircleShape)
-            )
-            Text(
-                text = userName,
-                modifier = Modifier.align(Alignment.CenterVertically),
-                fontWeight = FontWeight.SemiBold,
-                fontSize = 14.sp
-            )
-        }
+            // 상단 사용자 정보와 타이틀
+            Spacer(Modifier.height(16.dp))
 
-        Spacer(Modifier.height(16.dp))
-
-        // 토기 이미지
-        Card(
-            shape = RoundedCornerShape(16.dp),
-            elevation = CardDefaults.elevatedCardElevation(),
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Image(
-                painter = potteryImage,
-                contentDescription = "빗살무늬 토기 이미지",
-                contentScale = ContentScale.Crop,
+            // 토기 이미지
+            Card(
+                shape = RoundedCornerShape(16.dp),
+                elevation = CardDefaults.elevatedCardElevation(),
                 modifier = Modifier
-                    .height(220.dp)
+            ) {
+                Image(
+                    painter = potteryImage,
+                    contentDescription = "빗살무늬 토기 이미지",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .height(220.dp)
+                )
+            }
+
+            Spacer(Modifier.height(12.dp))
+
+            // 정보 구분 라벨
+            Row {
+                Column {
+                    Text(
+                        text = "역사",
+                        modifier = Modifier
+                            .background(color = Color(0xFFF9F6DC), shape = RoundedCornerShape(10.dp))
+                            .padding(horizontal = 8.dp, vertical = 2.dp),
+                        color = Color(0xFF888800),
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Medium
+                    )
+
+                    Spacer(Modifier.height(8.dp))
+
+                    // 제목
+                    Text(
+                        text = title,
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.Black
+                    )
+                }
+                Row {
+                    Spacer(modifier = Modifier.weight(1f))
+                    IconButton(
+                        onClick = { isEditing = !isEditing }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Edit,
+                            contentDescription = "수정"
+                        )
+                    }
+                }
+            }
+
+            Spacer(Modifier.height(4.dp))
+
+            // 설명
+            if (isEditing) {
+                TextField(
+                    value = editedDescription,
+                    onValueChange = { editedDescription = it },
+                    modifier = Modifier.fillMaxWidth(),
+                )
+            } else {
+                Text(
+                    text = editedDescription,
+                    fontSize = 14.sp,
+                    color = Color.DarkGray
+                )
+            }
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            // 확인 버튼
+            Button(
+                onClick = onConfirm,
+                modifier = Modifier
                     .fillMaxWidth()
-            )
-        }
-
-        Spacer(Modifier.height(12.dp))
-
-        // 정보 구분 라벨
-        Text(
-            text = "역사",
-            modifier = Modifier
-                .background(color = Color(0xFFF9F6DC), shape = RoundedCornerShape(10.dp))
-                .padding(horizontal = 8.dp, vertical = 2.dp),
-            color = Color(0xFF888800),
-            fontSize = 12.sp,
-            fontWeight = FontWeight.Medium
-        )
-
-        Spacer(Modifier.height(8.dp))
-
-        // 제목
-        Text(
-            text = title,
-            fontSize = 20.sp,
-            fontWeight = FontWeight.Bold,
-            color = Color.Black
-        )
-
-        Spacer(Modifier.height(4.dp))
-
-        // 설명
-        Text(
-            text = description,
-            fontSize = 14.sp,
-            color = Color.DarkGray
-        )
-
-        Spacer(Modifier.height(16.dp))
-
-        // 확인 버튼
-        Button(
-            onClick = onConfirm,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(44.dp),
-            shape = RoundedCornerShape(8.dp)
-        ) {
-            Text(
-                text = "확인",
-                fontSize = 16.sp
-            )
+                    .height(44.dp),
+                shape = RoundedCornerShape(8.dp)
+            ) {
+                Text(
+                    text = "확인",
+                    fontSize = 16.sp
+                )
+            }
         }
     }
 }
+

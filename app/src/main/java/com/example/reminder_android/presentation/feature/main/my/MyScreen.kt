@@ -56,7 +56,9 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.ui.layout.ContentScale
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.material.icons.filled.CheckCircleOutline
+import com.example.reminder_android.Category
 
 @Composable
 fun MyScreen(
@@ -136,19 +138,20 @@ private fun PotteryCard(
         ),
         elevation = CardDefaults.elevatedCardElevation(),
         modifier = Modifier
-            .padding(12.dp)
-            .fillMaxWidth(),
+            .padding(12.dp) // Revert padding to 12.dp as in MuseumItem's parent
+            .fillMaxWidth()
+            .height(140.dp), // Set height to 120.dp as in MuseumItem
         onClick = onCardClick
     ) {
         Row(
-            modifier = Modifier.padding(16.dp),
+            modifier = Modifier.padding(top = 4.dp, start = 13.dp, end = 8.dp),
             verticalAlignment = Alignment.Top
         ) {
             // 이미지 섹션
             Box(
                 modifier = Modifier
                     .weight(1f)
-                    .height(160.dp)
+                    .fillMaxHeight() // Set to fillMaxHeight as in MuseumItem
             ) {
                 Image(
                     painter = potteryImage,
@@ -168,7 +171,6 @@ private fun PotteryCard(
                         .clickable { onCheckedChange() }
                 )
             }
-
             Spacer(modifier = Modifier.width(16.dp))
 
             // 텍스트 및 액션 섹션
@@ -178,22 +180,35 @@ private fun PotteryCard(
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.Top
                 ) {
                     // 라벨 칩
-                    Text(
-                        text = label,
-                        fontSize = 12.sp,
-                        color = Color(0xFF888800),
-                        modifier = Modifier
-                            .background(Color(0xFFF9F6DC), shape = RoundedCornerShape(10.dp))
-                            .padding(horizontal = 8.dp, vertical = 4.dp)
-                    )
+                    Column(
+                        modifier = Modifier.padding(top = 4.dp)
+                    ) {
+                        Text(
+                            text = label,
+                            fontSize = 12.sp,
+                            color = Color(0xFF888800),
+                            modifier = Modifier
+                                .background(Color(0xFFF9F6DC), shape = RoundedCornerShape(10.dp))
+                                .padding(horizontal = 4.dp, vertical = 2.dp)
+                        )
+                        Text(
+                            text = title,
+                            fontSize = 15.sp,
+                            fontWeight = Bold,
+                            color = Color.Black
+                        )
+                    }
 
                     // 수정/삭제 버튼
                     Row {
                         IconButton(onClick = onDelete) {
                             Icon(
+                                modifier = Modifier
+                                    .align(Alignment.Top)
+                                    .size(20.dp),
                                 imageVector = Icons.Default.Delete,
                                 contentDescription = "삭제"
                             )
@@ -203,13 +218,7 @@ private fun PotteryCard(
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                // 제목
-                Text(
-                    text = title,
-                    fontSize = 18.sp,
-                    fontWeight = Bold,
-                    color = Color.Black
-                )
+                // 제
 
                 Spacer(modifier = Modifier.height(6.dp))
 
@@ -219,7 +228,7 @@ private fun PotteryCard(
                     fontSize = 14.sp,
                     color = Color.DarkGray,
                     maxLines = 2,
-                    textAlign = TextAlign.End
+                    textAlign = TextAlign.Start
                 )
             }
         }

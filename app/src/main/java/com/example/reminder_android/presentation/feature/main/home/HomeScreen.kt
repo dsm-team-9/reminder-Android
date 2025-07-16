@@ -80,7 +80,7 @@ fun HomeScreen(
 }
 
 @Composable
-internal fun MuseumItem(
+private fun MuseumItem(
     modifier: Modifier = Modifier,
     imageUrl: String,
     itemCount: Int,
