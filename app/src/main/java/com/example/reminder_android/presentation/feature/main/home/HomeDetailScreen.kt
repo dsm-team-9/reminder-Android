@@ -1,5 +1,6 @@
 package com.example.reminder_android.presentation.feature.main.home
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -23,122 +25,117 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.LineHeightStyle
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import com.example.reminder_android.R
+import com.example.reminder_android.presentation.AppNavigationItem
+
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 
 @Composable
 fun HomeDetailScreen(
     navController: NavController,
 ) {
     Column(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .background(color = Color(0xFFD9D9D9))
+            .fillMaxSize()
     ) {
         TopProfile(title = "ghdrlfehd")
-        PotteryDetailCard(
-            potteryImage = "https://example.com/your_image.jpg" // 여기에 실제 이미지 URL을 넣어주세요.
-        ) {
-
-        }
+        PotteryCard(
+            potteryImage = painterResource(R.drawable.testimg),
+            title = "",
+            description = "",
+            label = "",
+            onCardClick = { navController.navigate(AppNavigationItem.HomeExhibitsDetail.route) },
+            onEdit = {}
+        )
     }
 }
 
 @Composable
-fun PotteryDetailCard(
-    potteryImage: String,
-    title: String = "빗살무늬 토기",
-    description: String = """
-        빗살무늬 토기는 신석기 시대에 사용된 대표적인 토기로,
-        겉면에 빗살처럼 평행하거나 교차하는 무늬가 새겨진 것이 특징입니다.
-        주요 식량을 저장하거나 조리하는 데 사용되었으며, 한반도 전역에서 출토됩니다.
-        제작 방식은 손으로 빚은 후 빗살 새긴 눌러 구워 만드는 과정에 의해 완성됩니다.
-        이 유물은 당시 사람들의 생활 방식과 문화 수준을 보여주는 중요한 유물입니다.
-    """.trimIndent(),
-    onConfirm: () -> Unit
+private fun PotteryCard(
+    potteryImage: Painter,
+    title: String,
+    description: String,
+    label: String,
+    onCardClick: () -> Unit,
+    onEdit: () -> Unit,
 ) {
-    Column(
-        modifier = Modifier
-            .background(color = Color(0xFFF2F2F2))
-            .padding(start = 30.dp, end = 30.dp, bottom = 180.dp)
-            .background(color = Color.White, shape = RoundedCornerShape(12.dp))
-
+    Card(
+        shape = RoundedCornerShape(16.dp),
+        elevation = CardDefaults.elevatedCardElevation(),
+        modifier = Modifier.padding(12.dp),
+        onClick = onCardClick,
+        colors = CardDefaults.cardColors(containerColor = Color.White)
     ) {
-        // 상단 사용자 정보와 타이틀
-        Spacer(Modifier.height(16.dp))
-
-        // 토기 이미지
-        Card(
-            shape = RoundedCornerShape(16.dp),
-            elevation = CardDefaults.elevatedCardElevation(),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp)
-        ) {
-            AsyncImage(
-                model = potteryImage,
-                contentDescription = "빗살무늬 토기 이미지",
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .height(220.dp)
-                    .fillMaxWidth()
-            )
+        Row {
+            // 이미지 섹션
+            Box(modifier = Modifier.weight(1f)) {
+                Image(
+                    painter = potteryImage,
+                    contentDescription = null,
+                    modifier = Modifier.height(160.dp)
+                )
+                // 오른쪽 하단에 추가될 요소
+                Box(modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(8.dp)
+                ) {
+                    IconButton(onClick = onEdit) {
+                        Icon(
+                            imageVector = Icons.Default.Edit,
+                            contentDescription = "수정"
+                        )
+                    }
+                }
+            }
+            Spacer(Modifier.width(16.dp))
+            // 텍스트 및 액션 섹션
+            Column(modifier = Modifier.weight(1f)) {
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Column {
+                        Text(
+                            text = label,
+                            modifier = Modifier
+                                .background(color = Color(0xFFF9F6DC), shape = RoundedCornerShape(20.dp))
+                                .padding(horizontal = 8.dp, vertical = 2.dp),
+                            color = Color(0xFF888800),
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.Medium
+                        )
+                        Spacer(Modifier.height(6.dp))
+                        Text(
+                            text = title,
+                            fontSize = 18.sp,
+                            textAlign = TextAlign.Justify,
+                            color = Color.Black
+                        )
+                    }
+                }
+                Spacer(Modifier.height(32.dp))
+                Text(
+                    text = description,
+                    fontSize = 13.sp,
+                    color = Color(0xFF5F6074),
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
         }
-
-        Spacer(Modifier.height(12.dp))
-
-        // 정보 구분 라벨
-        Text(
-            text = "역사",
-            modifier = Modifier
-                .background(color = Color(0xFFF9F6DC), shape = RoundedCornerShape(10.dp))
-                .padding(horizontal = 8.dp, vertical = 2.dp),
-            color = Color(0xFF888800),
-            fontSize = 12.sp,
-            fontWeight = FontWeight.Medium
-        )
-
-        Spacer(Modifier.height(8.dp))
-
-        // 제목
-        Text(
-            text = title,
-            fontSize = 20.sp,
-            fontWeight = FontWeight.Bold,
-            color = Color.Black
-        )
-
-        Spacer(Modifier.height(4.dp))
-
-        // 설명
-        Text(
-            text = description,
-            fontSize = 14.sp,
-            color = Color.DarkGray
-        )
-
-        Spacer(Modifier.weight(1f))
-
-        // 확인 버튼
-        Button(
-            onClick = onConfirm,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(44.dp),
-            shape = RoundedCornerShape(8.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFF5F6074),
-                contentColor = Color.White,
-            )
-        ) {
-            Text(
-                text = "확인",
-                fontSize = 16.sp
-            )
-        }
-
     }
 }

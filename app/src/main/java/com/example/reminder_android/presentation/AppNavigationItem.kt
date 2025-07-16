@@ -12,4 +12,8 @@ sealed class AppNavigationItem(val route: String) {
     data object ChatAIDetail : AppNavigationItem("ChatAIDetail")
 
     data object UpLoadExhibit : AppNavigationItem("UpLoadExhibit")
+
+    data object MyDetail : AppNavigationItem("MyDetail")
+
+    data object Main : AppNavigationItem("Main")
 }

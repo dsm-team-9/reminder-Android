@@ -88,13 +88,14 @@ internal fun ReminderOutlinedTextField(
 
 @Composable
 internal fun ToggleMajors(
+    modifier: Modifier = Modifier,
     onMajorSelected: (String) -> Unit,
 ) {
-    val majors = listOf("all", "수학", "과학", "역사", "사회", "국어")
-    var selectedMajor by remember { mutableStateOf("all") }
+    val majors = listOf("전체", "수학", "과학", "역사", "사회", "국어")
+    var selectedMajor by remember { mutableStateOf("전체") }
 
     FlowRow(
-        modifier = Modifier.padding(vertical = 16.dp),
+        modifier = modifier.padding(vertical = 16.dp),
         horizontalArrangement = Arrangement.spacedBy(4.dp),
         verticalArrangement = Arrangement.spacedBy(4.dp),
     ) {
@@ -119,13 +120,13 @@ private fun MajorButton(
 ) {
     Text(
         text = major,
-        fontSize = 20.sp,
+        fontSize = 15.sp,
         color = if (selected) Color.White else Color.Black,
         modifier = Modifier
             .clip(RoundedCornerShape(16.dp))
             .background(color = if (selected) Color.Black else Color.White)
             .clickable { onClick(major) }
-            .padding(horizontal = 8.dp, vertical = 4.dp)
+            .padding(horizontal = 16.dp, vertical = 4.dp)
     )
 }
 

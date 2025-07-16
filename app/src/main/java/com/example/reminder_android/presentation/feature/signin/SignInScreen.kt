@@ -78,7 +78,7 @@ fun SignInScreen(
         Spacer(modifier = Modifier.padding(bottom = 32.dp))
         TextButton(
             modifier = Modifier.background(color = Color(0xFF5F6074), shape = RoundedCornerShape(10.dp)),
-            onClick = { navController.navigate(BottomMenu.MY.route) },
+            onClick = { navController.navigate(AppNavigationItem.Main.route) },
         ) {
             Text(
                 modifier = Modifier.fillMaxWidth(),

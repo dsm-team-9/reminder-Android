@@ -1,5 +1,6 @@
 package com.example.reminder_android.presentation
 
+import android.appwidget.AppWidgetProvider
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -36,8 +37,9 @@ import com.example.reminder_android.BottomMenu
 import com.example.reminder_android.presentation.feature.main.chat.ChatAIDetailScreen
 import com.example.reminder_android.presentation.feature.main.chat.ChatScreen
 import com.example.reminder_android.presentation.feature.main.home.HomeDetailScreen
-import com.example.reminder_android.presentation.feature.main.home.HomeExhibitsDetailScreen
+import com.example.reminder_android.presentation.feature.main.home.HomeExhibitDetailScreen
 import com.example.reminder_android.presentation.feature.main.home.HomeScreen
+import com.example.reminder_android.presentation.feature.main.my.MyDetailScreen
 import com.example.reminder_android.presentation.feature.main.my.MyScreen
 import com.example.reminder_android.presentation.feature.main.social.SocialScreen
 import com.example.reminder_android.presentation.feature.main.upLoadExhibit.UpLoadExhibit
@@ -114,7 +116,7 @@ private fun BaseApp() {
         composable(AppNavigationItem.SignUp.route) {
             SignUpScreen(navController = navController)
         }
-        composable(BottomMenu.MY.route) {
+        composable(AppNavigationItem.Main.route) {
             val mainAppNavController = rememberNavController()
             Scaffold(
                 modifier = Modifier.fillMaxSize(),
@@ -125,7 +127,7 @@ private fun BaseApp() {
                 floatingActionButton = {
                     FloatingActionButton(
                         modifier = Modifier.offset(y = 56.dp),
-                        onClick = { /* TODO: Handle FAB click */ },
+                        onClick = { mainAppNavController.navigate(AppNavigationItem.UpLoadExhibit.route) },
                         shape = CircleShape,
                     ) {
                         Icon(Icons.Filled.Add, "Add") // Using Material Icons Add icon
@@ -155,10 +157,13 @@ private fun BaseApp() {
                         }
                     }
                     composable(AppNavigationItem.HomeDetail.route) {
-                        HomeDetailScreen(navController = navController)
+                        HomeDetailScreen(navController = mainAppNavController)
                     }
                     composable(AppNavigationItem.HomeExhibitsDetail.route) {
-                        HomeExhibitsDetailScreen(navController = mainAppNavController)
+                        HomeExhibitDetailScreen(navController = mainAppNavController)
+                    }
+                    composable(AppNavigationItem.MyDetail.route) {
+                        MyDetailScreen(navController = mainAppNavController)
                     }
                     composable(AppNavigationItem.ChatAIDetail.route) {
                         ChatAIDetailScreen(navController = mainAppNavController)

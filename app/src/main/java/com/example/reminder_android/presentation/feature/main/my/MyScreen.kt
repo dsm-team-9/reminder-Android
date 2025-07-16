@@ -36,7 +36,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.reminder_android.R
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -51,13 +50,22 @@ import com.example.reminder_android.presentation.feature.main.home.TopProfile
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight.Companion.Bold
+import com.example.reminder_android.R
 import java.time.format.TextStyle
+import androidx.compose.material3.Checkbox
+import androidx.compose.ui.layout.ContentScale
+
+import androidx.compose.foundation.clickable
+import androidx.compose.material.icons.filled.CheckCircleOutline
 
 @Composable
 fun MyScreen(
     navController: NavController,
 ) {
     var isSelected by remember { mutableStateOf(false) } // 예시: 활성화/비활성화 상태
+    var isGameButtonEnabled by remember { mutableStateOf(true) } // 게임 시작 버튼 활성화/비활성화 상태
+    var isChecked by remember { mutableStateOf(false) }
+    var showPotteryCard by remember { mutableStateOf(true) }
 
     Column(
         modifier = Modifier
@@ -67,122 +75,153 @@ fun MyScreen(
         TopProfile(
             title = "홍길동"
         )
-        ToggleMajors {  }
-        Row {
+        ToggleMajors(
+            modifier = Modifier.padding(start = 10.dp)
+        ) {  }
+        Row(
+            modifier = Modifier.padding(start = 24.dp, end = 24.dp)
+        ) {
             Text(
                 modifier = Modifier
-                    .align(Alignment.CenterVertically)
-                    .padding(start = 20.dp),
+                    .align(Alignment.CenterVertically),
                 text = "홍길동 님의 박물관",
                 fontSize = 20.sp,
-                color = Color.Black
+                color = Color.Black,
+                fontWeight = Bold
             )
             Spacer(modifier = Modifier.weight(1f))
             TextButton(
                 modifier = Modifier.align(Alignment.CenterVertically),
-                onClick = { /* TODO: 게임 시작 로직 */ },
-                enabled = true, // 활성화/비활성화 상태를 여기에 연결
+                onClick = { isGameButtonEnabled = !isGameButtonEnabled /* TODO: 게임 시작 로직 */ },
+                enabled = isGameButtonEnabled, // 활성화/비활성화 상태를 여기에 연결
                 colors = ButtonDefaults.textButtonColors(
-                    containerColor = if (true) Color(0xFF1C1F42) else Color.LightGray, // 활성화 시 1C1F42, 비활성화 시 회색
+                    containerColor = if (isGameButtonEnabled) Color(0xFF1C1F42) else Color.LightGray, // 활성화 시 1C1F42, 비활성화 시 회색
                     contentColor = Color.White // 텍스트 색상 흰색
-                )
+                ),
+                shape = RoundedCornerShape(8.dp)
             ) {
-                Text("게임시작")
+                Text("비활성")
             }
         }
-        PotteryCard(
-            potteryImage = painterResource(R.drawable.testimg),
-            title = "빗살무늬토기",
-            description = "stringlabelstringlabelstringlabelstringlabelstringlabelstringlabelstringlabelstringlabelstringlabelstringlabelstringlabelstringlabelstringlabelstringlabelstringlabelstringlabelstringlabelstringlabelstringlabel",
-            label = "역사", // 실제 라벨 값으로 변경
-            selected = isSelected, // 상태 전달
-            onCheckToggle = { isSelected = !isSelected }, // 클릭 시 상태 변경
-            onDelete = {},
-            onCardClick = { navController.navigate(AppNavigationItem.HomeExhibitsDetail.route) }
-        )
+        if (showPotteryCard) {
+            PotteryCard(
+                potteryImage = painterResource(R.drawable.testimg),
+                title = "빗살무늬토기",
+                description = "stringlabelstringlabelstringlabelstringlabelstringlabelstringlabelstringlabelstringlabelstringlabelstringlabelstringlabelstringlabelstringlabelstringlabelstringlabelstringlabelstringlabelstringlabelstringlabel",
+                label = "역사", // 실제 라벨 값으로 변경
+                onCardClick = { navController.navigate(AppNavigationItem.MyDetail.route) },
+                onDelete = { showPotteryCard = false },
+                isChecked = isChecked,
+                onCheckedChange = { isChecked = !isChecked },
+            )
+        }
     }
 }
 
 @Composable
-fun PotteryCard(
+private fun PotteryCard(
     potteryImage: Painter,
     title: String,
     description: String,
-    label: String,
-    selected: Boolean,
-    onCheckToggle: () -> Unit,
+    label: String = "역사",
     onDelete: () -> Unit,
     onCardClick: () -> Unit,
+    isChecked: Boolean,
+    onCheckedChange: () -> Unit,
 ) {
     Card(
         shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = Color.White
+        ),
         elevation = CardDefaults.elevatedCardElevation(),
-        modifier = Modifier.padding(12.dp),
-        onClick = onCardClick,
-        colors = CardDefaults.cardColors(containerColor = Color.White)
+        modifier = Modifier
+            .padding(12.dp)
+            .fillMaxWidth(),
+        onClick = onCardClick
     ) {
-        Row {
+        Row(
+            modifier = Modifier.padding(16.dp),
+            verticalAlignment = Alignment.Top
+        ) {
             // 이미지 섹션
-            Box(modifier = Modifier.weight(1f)) {
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .height(160.dp)
+            ) {
                 Image(
                     painter = potteryImage,
-                    contentDescription = null,
-                    modifier = Modifier.height(160.dp)
+                    contentDescription = "$title 이미지",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.fillMaxSize()
                 )
-                // 체크마크 (활성화/비활성화)
-                IconButton(onClick = onCheckToggle,
+                // 체크마크 아이콘 (옵션)
+                Icon(
+                    imageVector = if (isChecked) Icons.Default.CheckCircle else Icons.Default.CheckCircleOutline,
+                    contentDescription = "선택됨 표시",
+                    tint = if (isChecked) Color(0xFF393e46) else Color.LightGray,
                     modifier = Modifier
                         .size(32.dp)
+                        .align(Alignment.TopStart)
                         .offset(8.dp, 8.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.CheckCircle,
-                        contentDescription = "체크",
-                        tint = if (selected) Color(0xFF393e46) else Color.LightGray,
-                    )
-                }
+                        .clickable { onCheckedChange() }
+                )
             }
-            Spacer(Modifier.width(16.dp))
+
+            Spacer(modifier = Modifier.width(16.dp))
+
             // 텍스트 및 액션 섹션
-            Column(modifier = Modifier.weight(1f)) {
+            Column(
+                modifier = Modifier.weight(1f)
+            ) {
                 Row(
+                    modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
-                    modifier = Modifier.fillMaxWidth()
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Column {
-                        Text(
-                            text = label,
-                            modifier = Modifier
-                                .background(color = Color(0xFFF9F6DC), shape = RoundedCornerShape(20.dp))
-                                .padding(horizontal = 8.dp, vertical = 2.dp),
-                            color = Color(0xFF888800),
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.Medium
-                        )
-                        Spacer(Modifier.height(6.dp))
-                        Text(
-                            text = title,
-                            fontSize = 18.sp,
-                            textAlign = TextAlign.Justify,
-                            color = Color.Black
-                        )
-                    }
+                    // 라벨 칩
+                    Text(
+                        text = label,
+                        fontSize = 12.sp,
+                        color = Color(0xFF888800),
+                        modifier = Modifier
+                            .background(Color(0xFFF9F6DC), shape = RoundedCornerShape(10.dp))
+                            .padding(horizontal = 8.dp, vertical = 4.dp)
+                    )
+
+                    // 수정/삭제 버튼
                     Row {
                         IconButton(onClick = onDelete) {
-                            Icon(Icons.Default.Delete, contentDescription = "삭제")
+                            Icon(
+                                imageVector = Icons.Default.Delete,
+                                contentDescription = "삭제"
+                            )
                         }
                     }
                 }
-                Spacer(Modifier.height(32.dp))
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                // 제목
+                Text(
+                    text = title,
+                    fontSize = 18.sp,
+                    fontWeight = Bold,
+                    color = Color.Black
+                )
+
+                Spacer(modifier = Modifier.height(6.dp))
+
+                // 설명 텍스트
                 Text(
                     text = description,
-                    fontSize = 13.sp,
-                    color = Color(0xFF5F6074),
+                    fontSize = 14.sp,
+                    color = Color.DarkGray,
                     maxLines = 2,
-                    overflow = TextOverflow.Ellipsis
+                    textAlign = TextAlign.End
                 )
             }
         }
     }
 }
-
