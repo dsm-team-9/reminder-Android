@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -49,19 +50,70 @@ import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.CardColors
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight.Companion.Bold
+import com.example.reminder_android.ToggleMajors
 
 @Composable
 fun HomeDetailScreen(
     navController: NavController,
 ) {
+    var isGameButtonEnabled by remember { mutableStateOf(true) }
+
     Column(
         modifier = Modifier
             .background(color = Color(0xFFD9D9D9))
             .fillMaxSize()
     ) {
         TopProfile(title = "ghdrlfehd")
+        ToggleMajors(
+            modifier = Modifier.padding(start = 10.dp),
+            onMajorSelected = {}
+        )
+        Row(
+            modifier = Modifier.padding(start = 24.dp, end = 24.dp)
+        ) {
+            Text(
+                modifier = Modifier
+                    .align(Alignment.CenterVertically),
+                text = "홍길동 님의 박물관",
+                fontSize = 20.sp,
+                color = Color.Black,
+                fontWeight = Bold
+            )
+            Spacer(modifier = Modifier.weight(1f))
+            TextButton(
+                modifier = Modifier
+                    .align(Alignment.CenterVertically),
+                onClick = { isGameButtonEnabled = !isGameButtonEnabled /* TODO: 게임 시작 로직 */ },
+                enabled = isGameButtonEnabled, // 활성화/비활성화 상태를 여기에 연결
+                colors = ButtonDefaults.textButtonColors(
+                    containerColor = if (isGameButtonEnabled) Color(0xFF1C1F42) else Color.LightGray, // 활성화 시 1C1F42, 비활성화 시 회색
+                    contentColor = Color.White // 텍스트 색상 흰색
+                ),
+                shape = RoundedCornerShape(8.dp),
+                contentPadding = PaddingValues(horizontal = 26.dp, vertical = 10.dp)
+            ) {
+                Text("비활성")
+            }
+        }
+        PotteryCard(
+            potteryImage = painterResource(R.drawable.testimg),
+            title = "빗살무늬토기",
+            description = "stringlabelstringlabelstringlabelstringlabelstringlabelstringlabelstringlabelstringlabelstringlabelstringlabelstringlabelstringlabelstringlabelstringlabelstringlabel",
+            label = "역사",
+            onDelete = {},
+            onCardClick = {
+                navController.navigate(AppNavigationItem.HomeExhibitsDetail.route)
+            },
+            isChecked = true,
+            onCheckedChange = {},
+        )
     }
 }
 

@@ -1,6 +1,6 @@
 package com.example.reminder_android.presentation.feature.signup
 
-import android.text.Layout
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -10,9 +10,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Visibility
-import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -32,13 +29,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.provider.FontsContractCompat.Columns
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.reminder_android.BottomMenu
 import com.example.reminder_android.R
 import com.example.reminder_android.ReminderOutlinedTextField
+import com.example.reminder_android.data.request.SignUpRequest
 import com.example.reminder_android.presentation.AppNavigationItem
+import com.example.reminder_android.presentations.data.api.ApiProvider
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @Composable
 fun SignUpScreen(
@@ -57,8 +57,12 @@ fun SignUpScreen(
             .padding(top = 40.dp, bottom = 28.dp, start = 28.dp, end = 28.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Topbar(navController = navController)
-        Text(text = "새 계정을 만들어 서비스를 시작하세요")
+        Column(
+            modifier = modifier.fillMaxWidth()
+        ) {
+            Topbar(navController = navController)
+            Text(text = "새 계정을 만들어 서비스를 시작하세요")
+        }
         ReminderOutlinedTextField(
             modifier = Modifier.align(Alignment.Start),
             values = phone,
@@ -84,7 +88,23 @@ fun SignUpScreen(
         Spacer(modifier = Modifier.padding(bottom = 32.dp))
         TextButton(
             modifier = Modifier.background(color = Color(0xFF5F6074), shape = RoundedCornerShape(10.dp)),
-            onClick = { navController.navigate(AppNavigationItem.SignIn.route) },
+            onClick = {
+                CoroutineScope(Dispatchers.IO).launch {
+                    kotlin.runCatching {
+                        ApiProvider.userApi.signUp(
+                            SignUpRequest(
+                                name = nickname,
+                                phoneNumber = phone,
+                                password = passwordCheck,
+                            )
+                        )
+                    }.onSuccess {
+                        navController.navigate(AppNavigationItem.SignIn.route)
+                    }.onFailure {
+                        Log.d("TEST", it.toString())
+                    }
+                }
+            },
         ) {
             Text(
                 modifier = Modifier.fillMaxWidth(),
@@ -124,7 +144,8 @@ fun Topbar(
         Text(
             modifier = Modifier.padding(start = 18.dp),
             text = "회원가입",
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
+            fontWeight = FontWeight.Bold
         )
     }
 }

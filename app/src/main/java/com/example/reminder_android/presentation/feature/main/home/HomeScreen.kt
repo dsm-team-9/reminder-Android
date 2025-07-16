@@ -66,7 +66,6 @@ fun HomeScreen(
                 .fillMaxSize()
                 .padding(start = 30.dp, end = 30.dp),
         ) {
-            ToggleMajors(onMajorSelected = { /* TODO: Handle major selection */ })
             MuseumItem(
                 modifier = Modifier.padding(top = 20.dp),
                 imageUrl = "",

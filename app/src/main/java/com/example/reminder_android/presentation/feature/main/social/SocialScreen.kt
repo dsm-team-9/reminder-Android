@@ -52,7 +52,6 @@ fun SocialScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(vertical = 24.dp)
             .background(color = Color(0xFFF2F2F2))
     ) {
         TopProfile(title = "홍길동")
@@ -119,7 +118,12 @@ fun NicknameSearchBar(
             singleLine = true,
             shape = RoundedCornerShape(24.dp),
             colors = TextFieldDefaults.colors(
-
+                focusedContainerColor = Color.White,
+                unfocusedContainerColor = Color.White,
+                disabledContainerColor = Color.White,
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent,
+                disabledIndicatorColor = Color.Transparent,
             ),
             modifier = modifier
                 .fillMaxWidth()

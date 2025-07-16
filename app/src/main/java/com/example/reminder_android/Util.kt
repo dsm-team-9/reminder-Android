@@ -1,10 +1,15 @@
 package com.example.reminder_android
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandHorizontally
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
@@ -12,18 +17,26 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
@@ -36,10 +49,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.LineHeightStyle
@@ -147,79 +162,82 @@ private fun MajorButton(
 }
 
 enum class Major {
-    수학,
-    과학,
-    역사,
-    사회,
-    국어
+    MATH, SCIENCE, HISTORY, SOCIAL_STUDIES, KOREAN
 }
 
-data class Category(
-    val name: String,
-    val bgColor: Color,
-    val textColor: Color,
-    val imageUrl: String
-)
-
 @Composable
-fun CategoryImageOnDemand(
-    categories: List<Category>,
-    modifier: Modifier = Modifier
+fun MajorPickerInlineWithScrimAndBlur(
+    majors: List<String> = listOf("컴퓨터공학", "전자공학", "디자인학", "경영학", "심리학")
 ) {
-    var selectedIndex by remember { mutableStateOf<Int?>(null) }
-    val scrollState = rememberScrollState()
+    var showPanel by remember { mutableStateOf(false) }
+    var selectedMajor by remember { mutableStateOf<String?>(null) }
 
-    Column(modifier = modifier.fillMaxWidth()) {
-        // 1) 카테고리 칩 영역
-        Row(
-            modifier = Modifier
-                .horizontalScroll(scrollState)
-                .padding(horizontal = 16.dp, vertical = 8.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            categories.forEachIndexed { index, cat ->
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier = Modifier
-                        .background(
-                            color = if (index == selectedIndex) cat.bgColor else Color(0xFFF0F0F0),
-                            shape = RoundedCornerShape(12.dp)
-                        )
-                        .clickable {
-                            selectedIndex = if (selectedIndex == index) null else index
-                        }
-                        .padding(horizontal = 12.dp, vertical = 6.dp)
-                ) {
-                    Text(
-                        text = cat.name,
-                        fontSize = 14.sp,
-                        color = if (index == selectedIndex) cat.textColor else Color.Gray
-                    )
-                }
-            }
+    Box {
+        // 1) 배경: 블러 + 반투명 스크린
+        if (showPanel) {
+            Box(
+                Modifier
+                    .fillMaxSize()
+                    .blur(16.dp) // 배경 전체에 블러 적용
+                    .clickable { showPanel = false }
+            )
         }
 
-        Spacer(modifier = Modifier.height(12.dp))
-
-        // 2) 클릭했을 때만 나타나는 이미지 영역
-        AnimatedVisibility(
-            visible = selectedIndex != null,
-            enter = fadeIn() + expandVertically(),
-            exit = shrinkVertically() + fadeOut()
+        // 2) 버튼과 인라인 패널
+        Row(
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            selectedIndex?.let { idx ->
-                AsyncImage(
-                    model = categories[idx].imageUrl,
-                    contentDescription = categories[idx].name,
-                    contentScale = ContentScale.Crop,
+            Text(
+                modifier = Modifier.clickable {
+                    showPanel = true
+                },
+                text = selectedMajor ?: "선택",
+                fontSize = 11.sp,
+            )
+
+            Spacer(modifier = Modifier.width(8.dp))
+
+            AnimatedVisibility(
+                visible = showPanel,
+                enter = expandHorizontally(expandFrom = Alignment.Start),
+                exit = shrinkHorizontally(shrinkTowards = Alignment.Start)
+            ) {
+                Card(
+                    shape = RoundedCornerShape(topStart = 12.dp, bottomStart = 12.dp),
+                    elevation = CardDefaults.cardElevation(8.dp),
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .height(200.dp)
-                        .padding(horizontal = 16.dp)
-                        .clip(RoundedCornerShape(16.dp))
-                )
+                        .height(IntrinsicSize.Min)
+                        .width(200.dp)
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .background(Color.White)
+                            .padding(12.dp),
+                        verticalArrangement = Arrangement.spacedBy(10.dp)
+                    ) {
+                        Text("전공 선택", fontSize = 18.sp, fontWeight = FontWeight.SemiBold)
+                        Divider()
+                        majors.forEach { major ->
+                            Text(
+                                text = major,
+                                fontSize = 16.sp,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clickable {
+                                        selectedMajor = major
+                                        showPanel = false
+                                    }
+                                    .padding(vertical = 6.dp)
+                            )
+                        }
+                    }
+                }
             }
         }
     }
 }
+
 

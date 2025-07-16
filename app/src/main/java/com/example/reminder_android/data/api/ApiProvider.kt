@@ -2,7 +2,7 @@ package com.example.reminder_android.presentations.data.api
 
 import android.content.Context
 import android.content.SharedPreferences
-import com.example.reminder_android.data.api.AuthApi
+import com.example.reminder_android.data.api.UserApi
 import okhttp3.Interceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -11,13 +11,12 @@ import okhttp3.logging.HttpLoggingInterceptor
 
 import com.example.reminder_android.BuildConfig
 import com.example.reminder_android.data.api.CardApi
-import com.example.reminder_android.data.api.HomeApi
-import com.example.reminder_android.data.api.MyPageApi
-import com.example.reminder_android.data.api.SocialApi
+import com.example.reminder_android.data.api.MuseumApi
+import com.example.reminder_android.data.api.PvPApi
 
 object ApiProvider {
 
-    private val BASE_URL = BuildConfig.BASE_URL
+    private const val BASE_URL = BuildConfig.BASE_URL
 
     private lateinit var sharedPreferences: SharedPreferences
 
@@ -56,9 +55,8 @@ object ApiProvider {
         }
     }
 
-    val authApi: AuthApi = getRetrofit().create(AuthApi::class.java)
+    val userApi: UserApi = getRetrofit().create(UserApi::class.java)
     val cardApi: CardApi = getRetrofit().create(CardApi::class.java)
-    val homeApi: HomeApi = getRetrofit().create(HomeApi::class.java)
-    val myPageApi: MyPageApi = getRetrofit().create(MyPageApi::class.java)
-    val socialApi: SocialApi = getRetrofit().create(SocialApi::class.java)
+    val pvPApi: PvPApi = getRetrofit().create(PvPApi::class.java)
+    val museumApi: MuseumApi = getRetrofit().create(MuseumApi::class.java)
 }

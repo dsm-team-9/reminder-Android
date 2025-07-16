@@ -12,11 +12,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -35,8 +36,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.reminder_android.Category
-import com.example.reminder_android.CategoryImageOnDemand
+import com.example.reminder_android.MajorPickerInlineWithScrimAndBlur
 import com.example.reminder_android.R
 import com.example.reminder_android.presentation.feature.main.home.TopProfile
 
@@ -45,16 +45,13 @@ import com.example.reminder_android.presentation.feature.main.home.TopProfile
 fun MyDetailScreen(
     navController: NavController
 ) {
-    var category: List<Category> = listOf(Category(name = "과학", bgColor = Color.Blue, textColor = Color.White, imageUrl = ""), Category(name = "과학", bgColor = Color.Blue, textColor = Color.White, imageUrl = ""), Category(name = "과학", bgColor = Color.Blue, textColor = Color.White, imageUrl = ""))
-
     Column(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .background(color = Color(0xFFF2F2F2))
+            .fillMaxSize()
     ) {
         TopProfile(
             title = "홍길동"
-        )
-        CategoryImageOnDemand(
-            category
         )
         PotteryDetailCard(
             modifier = Modifier
@@ -62,7 +59,7 @@ fun MyDetailScreen(
                 .background(color = Color(0xFFD9D9D9))
                 .padding(vertical = 12.dp, horizontal = 20.dp),
             potteryImage = painterResource(R.drawable.testimg),
-            onConfirm = {},
+            onConfirm = { navController.popBackStack() },
         )
     }
 }
@@ -86,7 +83,6 @@ fun PotteryDetailCard(
 
     Box(
         modifier = modifier
-            .fillMaxSize()
             .background(color = Color.White, shape = RoundedCornerShape(20.dp))
     ) {
         Column(
@@ -116,14 +112,8 @@ fun PotteryDetailCard(
             // 정보 구분 라벨
             Row {
                 Column {
-                    Text(
-                        text = "역사",
-                        modifier = Modifier
-                            .background(color = Color(0xFFF9F6DC), shape = RoundedCornerShape(10.dp))
-                            .padding(horizontal = 8.dp, vertical = 2.dp),
-                        color = Color(0xFF888800),
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.Medium
+                    MajorPickerInlineWithScrimAndBlur(
+
                     )
 
                     Spacer(Modifier.height(8.dp))
@@ -137,7 +127,6 @@ fun PotteryDetailCard(
                     )
                 }
                 Row {
-                    Spacer(modifier = Modifier.weight(1f))
                     IconButton(
                         onClick = { isEditing = !isEditing }
                     ) {
@@ -156,7 +145,9 @@ fun PotteryDetailCard(
                 TextField(
                     value = editedDescription,
                     onValueChange = { editedDescription = it },
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .background(color = Color.White)
+                        .fillMaxWidth(),
                 )
             } else {
                 Text(
@@ -166,7 +157,6 @@ fun PotteryDetailCard(
                 )
             }
 
-            Spacer(modifier = Modifier.weight(1f))
 
             // 확인 버튼
             Button(
@@ -174,13 +164,22 @@ fun PotteryDetailCard(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(44.dp),
-                shape = RoundedCornerShape(8.dp)
+                shape = RoundedCornerShape(8.dp),
+                colors = ButtonColors(
+                    containerColor = Color(0xFF5F6074),
+                    contentColor = Color.White,
+                    disabledContainerColor = Color(0xFF5F6074),
+                    disabledContentColor = Color.White
+                )
             ) {
                 Text(
                     text = "확인",
-                    fontSize = 16.sp
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White
                 )
             }
+
         }
     }
 }

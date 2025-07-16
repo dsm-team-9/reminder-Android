@@ -50,6 +50,7 @@ import androidx.navigation.NavController
 import androidx.navigation.navOptions
 import coil.compose.AsyncImage
 import com.example.reminder_android.R
+import com.example.reminder_android.ToggleMajors
 import com.example.reminder_android.presentation.AppNavigationItem
 import com.example.reminder_android.presentation.feature.main.home.TopProfile
 
@@ -63,15 +64,20 @@ fun ChatScreen(
             .fillMaxSize()
     ) {
         TopProfile(
-            title = ""
+            title = "",
         )
+        ToggleMajors(
+            modifier = Modifier.padding(start = 10.dp)
+        ) {  }
         PotteryCard(
             potteryImage = painterResource(R.drawable.testimg),
-            title = "",
+            title = "qltxkfansmlxhrl",
             description = "",
             label = "역사",
             onDelete = {},
-            onCardClick = {},
+            onChatClick = {
+                navController.navigate(AppNavigationItem.ChatAIDetail.route)
+            },
             isChecked = true,
             onCheckedChange = {},
         )
@@ -88,13 +94,13 @@ fun ChatScreen(
 //}
 
 @Composable
-fun PotteryCard(
+private fun PotteryCard(
     potteryImage: Painter,
     title: String,
     description: String,
     label: String = "역사",
     onDelete: () -> Unit,
-    onCardClick: () -> Unit,
+    onChatClick: () -> Unit,
     isChecked: Boolean,
     onCheckedChange: () -> Unit,
 ) {
@@ -105,19 +111,19 @@ fun PotteryCard(
         ),
         elevation = CardDefaults.elevatedCardElevation(),
         modifier = Modifier
-            .padding(12.dp)
-            .fillMaxWidth(),
-        onClick = onCardClick
+            .padding(12.dp) // Revert padding to 12.dp as in MuseumItem's parent
+            .fillMaxWidth()
+            .height(140.dp), // Set height to 120.dp as in MuseumItem
     ) {
         Row(
-            modifier = Modifier.padding(12.dp),
+            modifier = Modifier.padding(top = 4.dp, start = 13.dp, end = 8.dp),
             verticalAlignment = Alignment.Top
         ) {
             // 이미지 섹션
             Box(
                 modifier = Modifier
                     .weight(1f)
-                    .height(160.dp)
+                    .fillMaxHeight() // Set to fillMaxHeight as in MuseumItem
             ) {
                 Image(
                     painter = potteryImage,
@@ -137,7 +143,6 @@ fun PotteryCard(
                         .clickable { onCheckedChange() }
                 )
             }
-
             Spacer(modifier = Modifier.width(16.dp))
 
             // 텍스트 및 액션 섹션
@@ -147,22 +152,35 @@ fun PotteryCard(
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.Top
                 ) {
                     // 라벨 칩
-                    Text(
-                        text = label,
-                        fontSize = 12.sp,
-                        color = Color(0xFF888800),
-                        modifier = Modifier
-                            .background(Color(0xFFF9F6DC), shape = RoundedCornerShape(10.dp))
-                            .padding(horizontal = 8.dp, vertical = 4.dp)
-                    )
+                    Column(
+                        modifier = Modifier.padding(top = 4.dp)
+                    ) {
+                        Text(
+                            text = label,
+                            fontSize = 12.sp,
+                            color = Color(0xFF888800),
+                            modifier = Modifier
+                                .background(Color(0xFFF9F6DC), shape = RoundedCornerShape(10.dp))
+                                .padding(horizontal = 4.dp, vertical = 2.dp)
+                        )
+                        Text(
+                            text = title,
+                            fontSize = 15.sp,
+                            fontWeight = Bold,
+                            color = Color.Black
+                        )
+                    }
 
                     // 수정/삭제 버튼
                     Row {
                         IconButton(onClick = onDelete) {
                             Icon(
+                                modifier = Modifier
+                                    .align(Alignment.Top)
+                                    .size(20.dp),
                                 imageVector = Icons.Default.Delete,
                                 contentDescription = "삭제"
                             )
@@ -172,36 +190,22 @@ fun PotteryCard(
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                // 제목
-                Text(
-                    text = title,
-                    fontSize = 18.sp,
-                    fontWeight = Bold,
-                    color = Color.Black
-                )
+                // 제
 
                 Spacer(modifier = Modifier.height(6.dp))
 
                 // 설명 텍스트
-                Text(
-                    text = description,
-                    fontSize = 14.sp,
-                    color = Color.DarkGray,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis
-                )
-
-                Text(
-                    modifier = Modifier
-                        .padding(horizontal = 40.dp, vertical = 8.dp)
-                        .background(color = Color(0xFF5F6074), shape = RoundedCornerShape(4.dp))
-                        .align(Alignment.End)
-                        .clickable {
-
-                        },
-                    text = "채팅하기",
-
-                )
+                TextButton(
+                    onClick = onChatClick
+                ) {
+                    Text(
+                        text = "채팅하기",
+                        fontSize = 14.sp,
+                        color = Color.DarkGray,
+                        maxLines = 2,
+                        textAlign = TextAlign.Right
+                    )
+                }
             }
         }
     }
