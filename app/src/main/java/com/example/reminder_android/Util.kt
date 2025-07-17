@@ -53,15 +53,17 @@ import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.compose.AsyncImage
+import androidx.navigation.NavController
 
 @Composable
 internal fun ReminderOutlinedTextField(
@@ -69,8 +71,8 @@ internal fun ReminderOutlinedTextField(
     values: String,
     titleString: String,
     isPasswordMode: Boolean = false,
+    onValueChange: (String) -> Unit
 ) {
-    var value by remember { mutableStateOf(values) }
     var isPasswordVisible by remember { mutableStateOf(true) }
 
     Text(
@@ -87,8 +89,8 @@ internal fun ReminderOutlinedTextField(
             )
             .padding(top = 6.dp)
             .fillMaxWidth(),
-        value = value,
-        onValueChange = { value = it },
+        value = values,
+        onValueChange = onValueChange,
         colors = OutlinedTextFieldDefaults.colors(
             unfocusedBorderColor = Color(0xFFA1A2A4),
             unfocusedContainerColor = Color(0xFFF9FAFB),
@@ -159,10 +161,6 @@ private fun MajorButton(
             .clickable { onClick(major) }
             .padding(horizontal = 16.dp, vertical = 4.dp)
     )
-}
-
-enum class Major {
-    MATH, SCIENCE, HISTORY, SOCIAL_STUDIES, KOREAN
 }
 
 @Composable
@@ -240,6 +238,44 @@ fun MajorPickerInlineWithScrimAndBlur(
             }
         }
     }
+}
+
+@Composable
+internal fun TopProfile(
+    modifier: Modifier = Modifier,
+    iconSize: Dp = 40.dp,
+    title: String,
+) {
+    Box(
+        modifier = modifier
+            .background(color = Color.White)
+            .fillMaxWidth()
+            .height(56.dp),
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxSize().padding(start = 12.dp, end = 16.dp)
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(iconSize)
+                    .background(Color.White, shape = RoundedCornerShape(4.dp))
+            )
+            Spacer(modifier = Modifier.width(12.dp))
+            Text(
+                text = "${title}님",
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Medium,
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.End,
+                color = Color.Black,
+            )
+        }
+    }
+}
+
+enum class Major {
+
 }
 
 
