@@ -34,15 +34,23 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.reminder_android.BottomMenu
+<<<<<<< HEAD
 import com.example.reminder_android.presentation.feature.main.chat.ChatAIDetailScreen
+=======
+>>>>>>> origin/main
 import com.example.reminder_android.presentation.feature.main.chat.ChatScreen
 import com.example.reminder_android.presentation.feature.main.home.HomeDetailScreen
 import com.example.reminder_android.presentation.feature.main.home.HomeExhibitDetailScreen
 import com.example.reminder_android.presentation.feature.main.home.HomeScreen
+<<<<<<< HEAD
 import com.example.reminder_android.presentation.feature.main.my.MyDetailScreen
 import com.example.reminder_android.presentation.feature.main.my.MyScreen
 import com.example.reminder_android.presentation.feature.main.social.SocialScreen
 import com.example.reminder_android.presentation.feature.main.upLoadExhibit.UpLoadExhibit
+=======
+import com.example.reminder_android.presentation.feature.main.my.MyScreen
+import com.example.reminder_android.presentation.feature.main.social.SocialScreen
+>>>>>>> origin/main
 import com.example.reminder_android.presentation.feature.signin.SignInScreen
 import com.example.reminder_android.presentation.feature.signup.SignUpScreen
 import com.example.reminder_android.presentation.theme.ReminderAndroidTheme
@@ -157,6 +165,7 @@ private fun BaseApp() {
                         }
                     }
                     composable(AppNavigationItem.HomeDetail.route) {
+<<<<<<< HEAD
                         HomeDetailScreen(navController = mainAppNavController)
                     }
                     composable(AppNavigationItem.HomeExhibitsDetail.route) {
@@ -170,9 +179,27 @@ private fun BaseApp() {
                     }
                     composable(AppNavigationItem.UpLoadExhibit.route) {
                         UpLoadExhibit(navController = mainAppNavController)
+=======
+                        HomeDetailScreen()
+>>>>>>> origin/main
                     }
                 }
             }
         }
+<<<<<<< HEAD
+=======
+    }
+}
+
+@Composable
+fun TestScreen(
+    navController: NavController,
+    screenName: String,
+) {
+    Box(modifier = Modifier
+        .fillMaxSize()
+        .background(Color.White)) {
+        Text(text = screenName)
+>>>>>>> origin/main
     }
 }

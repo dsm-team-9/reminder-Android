@@ -1,5 +1,6 @@
 package com.example.reminder_android.presentation.feature.main.chat
 
+<<<<<<< HEAD
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -53,11 +54,17 @@ import com.example.reminder_android.R
 import com.example.reminder_android.ToggleMajors
 import com.example.reminder_android.presentation.AppNavigationItem
 import com.example.reminder_android.presentation.feature.main.home.TopProfile
+=======
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.navigation.NavController
+>>>>>>> origin/main
 
 @Composable
 fun ChatScreen(
     navController: NavController,
 ) {
+<<<<<<< HEAD
     Column(
         modifier = Modifier
             .background(color = Color(0xFFD9D9D9))
@@ -209,4 +216,7 @@ private fun PotteryCard(
             }
         }
     }
+=======
+    Text("ChatScreen")
+>>>>>>> origin/main
 }

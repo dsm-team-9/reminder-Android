@@ -7,6 +7,7 @@ sealed class AppNavigationItem(val route: String) {
 
     data object HomeDetail : AppNavigationItem("HomeDetail")
 
+<<<<<<< HEAD
     data object HomeExhibitsDetail : AppNavigationItem("HomeExhibitsDetail")
 
     data object ChatAIDetail : AppNavigationItem("ChatAIDetail")
@@ -16,4 +17,7 @@ sealed class AppNavigationItem(val route: String) {
     data object MyDetail : AppNavigationItem("MyDetail")
 
     data object Main : AppNavigationItem("Main")
+=======
+
+>>>>>>> origin/main
 }
