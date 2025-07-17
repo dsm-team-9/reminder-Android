@@ -1,6 +1,5 @@
 package com.example.reminder_android.presentation.feature.main.my
 
-<<<<<<< HEAD
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -50,17 +49,11 @@ import com.example.reminder_android.R
 import com.example.reminder_android.ToggleMajors
 import com.example.reminder_android.presentation.AppNavigationItem
 import com.example.reminder_android.presentation.feature.main.home.TopProfile
-=======
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.navigation.NavController
->>>>>>> origin/main
 
 @Composable
 fun MyScreen(
     navController: NavController,
 ) {
-<<<<<<< HEAD
     var isSelected by remember { mutableStateOf(false) } // 예시: 활성화/비활성화 상태
     var isGameButtonEnabled by remember { mutableStateOf(true) } // 게임 시작 버튼 활성화/비활성화 상태
     var isChecked by remember { mutableStateOf(false) }
@@ -233,7 +226,3 @@ private fun PotteryCard(
         }
     }
 }
-=======
-    Text("MyScreen")
-}
->>>>>>> origin/main

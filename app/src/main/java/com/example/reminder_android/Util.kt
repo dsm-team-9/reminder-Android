@@ -167,10 +167,10 @@ enum class Major {
 
 @Composable
 fun MajorPickerInlineWithScrimAndBlur(
-    majors: List<String> = listOf("컴퓨터공학", "전자공학", "디자인학", "경영학", "심리학")
+    onMajorSelected: (MajorTag) -> Unit
 ) {
     var showPanel by remember { mutableStateOf(false) }
-    var selectedMajor by remember { mutableStateOf<String?>(null) }
+    var selectedMajor by remember { mutableStateOf<MajorTag?>(null) }
 
     Box {
         // 1) 배경: 블러 + 반투명 스크린
@@ -194,8 +194,9 @@ fun MajorPickerInlineWithScrimAndBlur(
                 modifier = Modifier.clickable {
                     showPanel = true
                 },
-                text = selectedMajor ?: "선택",
+                text = selectedMajor?.displayName ?: "선택",
                 fontSize = 11.sp,
+                color = selectedMajor?.color ?: Color.Black // Apply color here
             )
 
             Spacer(modifier = Modifier.width(8.dp))
@@ -220,14 +221,15 @@ fun MajorPickerInlineWithScrimAndBlur(
                     ) {
                         Text("전공 선택", fontSize = 18.sp, fontWeight = FontWeight.SemiBold)
                         Divider()
-                        majors.forEach { major ->
+                        MajorTag.values().forEach { major ->
                             Text(
-                                text = major,
+                                text = major.displayName,
                                 fontSize = 16.sp,
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .clickable {
                                         selectedMajor = major
+                                        onMajorSelected(major)
                                         showPanel = false
                                     }
                                     .padding(vertical = 6.dp)
