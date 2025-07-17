@@ -1,5 +1,6 @@
 package com.example.reminder_android.presentation.feature.main.chat
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -16,6 +17,8 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
@@ -28,6 +31,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -38,16 +42,27 @@ import androidx.compose.ui.text.font.FontWeight.Companion.Bold
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.reminder_android.R
 import com.example.reminder_android.ToggleMajors
+import com.example.reminder_android.data.response.MyCardResponse
 import com.example.reminder_android.presentation.AppNavigationItem
 import com.example.reminder_android.presentation.feature.main.home.TopProfile
+import com.example.reminder_android.presentations.data.api.ApiProvider
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @Composable
 fun ChatScreen(
     navController: NavController,
+    chatViewModel: ChatViewModel = viewModel()
 ) {
+    LaunchedEffect(Unit) {
+        chatViewModel.fetchMyCard()
+    }
+
     Column(
         modifier = Modifier
             .background(color = Color(0xFFD9D9D9))
@@ -59,29 +74,25 @@ fun ChatScreen(
         ToggleMajors(
             modifier = Modifier.padding(start = 10.dp)
         ) {  }
-        PotteryCard(
-            potteryImage = painterResource(R.drawable.testimg),
-            title = "qltxkfansmlxhrl",
-            description = "",
-            label = "역사",
-            onDelete = {},
-            onChatClick = {
-                navController.navigate(AppNavigationItem.ChatAIDetail.route)
-            },
-            isChecked = true,
-            onCheckedChange = {},
-        )
+        LazyColumn {
+            items(chatViewModel.chatCardList) {
+                PotteryCard(
+                    potteryImage = painterResource(R.drawable.testimg),
+                    title = "qltxkfansmlxhrl",
+                    description = "",
+                    label = "역사",
+                    cardId = it.id, // cardId 전달
+                    onDelete = {},
+                    onChatClick = {
+                        navController.navigate(AppNavigationItem.ChatAIDetail.route + "/${it.id}") // cardId 전달
+                    },
+                    isChecked = true,
+                    onCheckedChange = {},
+                )
+            }
+        }
     }
 }
-
-//// 1. (예시) 주제 Enum 정의
-//enum class ArtifactCategory(
-//    val displayName: String,
-//    val labelColor: Color = Color(0xFFF9F6DC),
-//    val labelTextColor: Color = Color(0xFF817313)
-//) {
-//    HISTORY("역사")
-//}
 
 @Composable
 private fun PotteryCard(
@@ -89,6 +100,7 @@ private fun PotteryCard(
     title: String,
     description: String,
     label: String = "역사",
+    cardId: Int, // cardId 파라미터 추가
     onDelete: () -> Unit,
     onChatClick: () -> Unit,
     isChecked: Boolean,
@@ -120,17 +132,6 @@ private fun PotteryCard(
                     contentDescription = "$title 이미지",
                     contentScale = ContentScale.Crop,
                     modifier = Modifier.fillMaxSize()
-                )
-                // 체크마크 아이콘 (옵션)
-                Icon(
-                    imageVector = if (isChecked) Icons.Default.CheckCircle else Icons.Default.CheckCircleOutline,
-                    contentDescription = "선택됨 표시",
-                    tint = if (isChecked) Color(0xFF393e46) else Color.LightGray,
-                    modifier = Modifier
-                        .size(32.dp)
-                        .align(Alignment.TopStart)
-                        .offset(8.dp, 8.dp)
-                        .clickable { onCheckedChange() }
                 )
             }
             Spacer(modifier = Modifier.width(16.dp))
@@ -165,17 +166,6 @@ private fun PotteryCard(
                     }
 
                     // 수정/삭제 버튼
-                    Row {
-                        IconButton(onClick = onDelete) {
-                            Icon(
-                                modifier = Modifier
-                                    .align(Alignment.Top)
-                                    .size(20.dp),
-                                imageVector = Icons.Default.Delete,
-                                contentDescription = "삭제"
-                            )
-                        }
-                    }
                 }
 
                 Spacer(modifier = Modifier.height(8.dp))

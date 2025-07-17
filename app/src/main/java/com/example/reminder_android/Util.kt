@@ -275,7 +275,9 @@ internal fun TopProfile(
 }
 
 enum class Major {
-
+    
 }
+
+
 
 

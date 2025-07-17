@@ -6,4 +6,5 @@ data class SearchUserNameResponse(
     @SerializedName("id") val id: Int,
     @SerializedName("name") val name: String,
     @SerializedName("phoneNumber") val phoneNumber: String,
+    @SerializedName("cardCount") val cardCount: Int,
 )

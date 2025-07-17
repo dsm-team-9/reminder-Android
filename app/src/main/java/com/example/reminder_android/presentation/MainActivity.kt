@@ -29,10 +29,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.reminder_android.BottomMenu
 import com.example.reminder_android.presentation.feature.main.chat.ChatAIDetailScreen
 import com.example.reminder_android.presentation.feature.main.chat.ChatScreen
@@ -156,8 +158,9 @@ private fun BaseApp() {
                             ChatScreen(navController = mainAppNavController)
                         }
                     }
-                    composable(AppNavigationItem.HomeDetail.route) {
-                        HomeDetailScreen(navController = mainAppNavController)
+                    composable(AppNavigationItem.HomeDetail.route + "/{userId}",
+                        arguments = listOf(navArgument("userId") { type = NavType.IntType })) {
+                        backStackEntry -> HomeDetailScreen(navController = mainAppNavController, userId = backStackEntry.arguments?.getInt("userId") ?: 0)
                     }
                     composable(AppNavigationItem.HomeExhibitsDetail.route) {
                         HomeExhibitDetailScreen(navController = mainAppNavController)
@@ -165,8 +168,9 @@ private fun BaseApp() {
                     composable(AppNavigationItem.MyDetail.route) {
                         MyDetailScreen(navController = mainAppNavController)
                     }
-                    composable(AppNavigationItem.ChatAIDetail.route) {
-                        ChatAIDetailScreen(navController = mainAppNavController)
+                    composable(AppNavigationItem.ChatAIDetail.route + "/{cardId}",
+                        arguments = listOf(navArgument("cardId") { type = NavType.IntType })) {
+                        backStackEntry -> ChatAIDetailScreen(navController = mainAppNavController, cardId = backStackEntry.arguments?.getInt("cardId") ?: 0)
                     }
                     composable(AppNavigationItem.UpLoadExhibit.route) {
                         UpLoadExhibit(navController = mainAppNavController)

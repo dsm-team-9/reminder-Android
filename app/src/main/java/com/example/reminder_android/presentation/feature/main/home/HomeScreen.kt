@@ -1,5 +1,6 @@
 package com.example.reminder_android.presentation.feature.main.home
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -40,52 +41,84 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontSynthesis
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.navOptions
 import com.example.reminder_android.ToggleMajors
 import com.example.reminder_android.presentation.AppNavigationItem
+import com.example.reminder_android.presentations.data.api.ApiProvider
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
     navController: NavController,
+    homeViewModel: HomeViewModel = viewModel()
 ) {
+    LaunchedEffect(Unit) {
+        homeViewModel.fetchFollowMuseum()
+    }
+
     Column {
         TopProfile(
             modifier = Modifier.fillMaxWidth(),
             iconSize = 56.dp,
             title = "홍길동",
         )
-        Column(
+        LazyColumn(
             modifier = Modifier
                 .background(color = Color(0xFFF2F2F2))
                 .fillMaxSize()
                 .padding(start = 30.dp, end = 30.dp),
         ) {
-            MuseumItem(
-                modifier = Modifier.padding(top = 20.dp),
-                imageUrl = "",
-                itemCount = 0,
-                nickName = "홍길동",
-                navController = navController,
-                appRoute = AppNavigationItem.HomeDetail.route,
-            )
+            items(homeViewModel.followMuseumList) {
+                MuseumItem(
+                    modifier = Modifier.padding(top = 20.dp),
+                    imageUrl = it.bannerUrl,
+                    itemCount = it.cardCount,
+                    nickName = it.username,
+                    userId = it.userId, // userId 추가
+                    onClick = {
+                        val userId = it.userId
+                        CoroutineScope(Dispatchers.IO).launch {
+                            kotlin.runCatching {
+                                ApiProvider.museumApi.searchMuseumCard(
+                                    userId = it.userId,
+                                    category = null
+                                )
+                            }.onSuccess {
+                                withContext(Dispatchers.Main) {
+                                    navController.navigate(AppNavigationItem.HomeDetail.route + "/$userId") // userId 전달
+                                }
+                            }.onFailure {
+                                Log.d("TEST", it.toString())
+                            }
+                        }
+                    }
+                )
+            }
         }
     }
 }
 
 @Composable
-private fun MuseumItem(
+internal fun MuseumItem(
     modifier: Modifier = Modifier,
-    imageUrl: String,
+    imageUrl: String?,
     itemCount: Int,
     nickName: String,
-    navController: NavController,
-    appRoute: String,
+    userId: Int, // userId 파라미터 추가
+    onClick: () -> Unit,
 ) {
     Card(
         modifier = modifier
@@ -97,7 +130,7 @@ private fun MuseumItem(
             disabledContainerColor = Color.White,
             disabledContentColor = Color.Black,
         ),
-        onClick = { navController.navigate(AppNavigationItem.HomeDetail.route) },
+        onClick = onClick,
         shape = RoundedCornerShape(12.dp),
         elevation = CardDefaults.elevatedCardElevation(),
     ) {

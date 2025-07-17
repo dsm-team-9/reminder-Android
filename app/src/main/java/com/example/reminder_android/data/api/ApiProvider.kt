@@ -2,6 +2,7 @@ package com.example.reminder_android.presentations.data.api
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.util.Log
 import com.example.reminder_android.data.api.UserApi
 import okhttp3.Interceptor
 import retrofit2.Retrofit
@@ -13,6 +14,7 @@ import com.example.reminder_android.BuildConfig
 import com.example.reminder_android.data.api.CardApi
 import com.example.reminder_android.data.api.MuseumApi
 import com.example.reminder_android.data.api.PvPApi
+import androidx.core.content.edit
 
 object ApiProvider {
 
@@ -20,13 +22,29 @@ object ApiProvider {
 
     private lateinit var sharedPreferences: SharedPreferences
 
+    lateinit var userApi: UserApi
+    lateinit var cardApi: CardApi
+    lateinit var pvPApi: PvPApi
+    lateinit var museumApi: MuseumApi
+
     fun initialize(context: Context) {
         sharedPreferences = context.getSharedPreferences("my_shared_prefs", Context.MODE_PRIVATE)
+        Log.d("ApiProvider", "SharedPreferences initialized.")
+        val retrofit = getRetrofit()
+        userApi = retrofit.create(UserApi::class.java)
+        cardApi = retrofit.create(CardApi::class.java)
+        pvPApi = retrofit.create(PvPApi::class.java)
+        museumApi = retrofit.create(MuseumApi::class.java)
     }
 
 
+    fun saveToken(token: String) {
+        sharedPreferences.edit { putString("token", token) }
+        Log.d("ApiProvider", "Token saved: $token")
+    }
+
     private fun getLoggingInterceptor() =
-        HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BASIC)
+        HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
 
 
     private fun getRetrofit(): Retrofit {
@@ -45,6 +63,7 @@ object ApiProvider {
     private fun getTokenInterceptor(): Interceptor {
         return Interceptor { chain ->
             val token = sharedPreferences.getString("token", "") ?: ""
+            Log.d("ApiProvider", "Retrieved token for interceptor: $token")
             val request = chain.request().newBuilder()
                 .addHeader(
                     "Authorization",
@@ -54,9 +73,4 @@ object ApiProvider {
             chain.proceed(request)
         }
     }
-
-    val userApi: UserApi = getRetrofit().create(UserApi::class.java)
-    val cardApi: CardApi = getRetrofit().create(CardApi::class.java)
-    val pvPApi: PvPApi = getRetrofit().create(PvPApi::class.java)
-    val museumApi: MuseumApi = getRetrofit().create(MuseumApi::class.java)
 }

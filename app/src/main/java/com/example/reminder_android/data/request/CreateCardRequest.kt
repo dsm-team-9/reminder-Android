@@ -7,5 +7,5 @@ import java.io.Serial
 data class CreateCardRequest(
     @SerializedName("title") val title: String,
     @SerializedName("content") val content: String,
-    @SerializedName("category") val category: Major,
+    @SerializedName("category") val category: Major?,
 )

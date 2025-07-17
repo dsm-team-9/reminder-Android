@@ -1,5 +1,7 @@
 package com.example.reminder_android.presentation.feature.main.my
 
+import android.media.Image
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -17,6 +19,8 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
@@ -30,6 +34,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -44,21 +49,36 @@ import androidx.compose.ui.text.font.FontWeight.Companion.Bold
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
 import com.example.reminder_android.R
 import com.example.reminder_android.ToggleMajors
+import com.example.reminder_android.data.response.MyCardResponse
 import com.example.reminder_android.presentation.AppNavigationItem
 import com.example.reminder_android.presentation.feature.main.home.TopProfile
+import com.example.reminder_android.presentations.data.api.ApiProvider
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @Composable
 fun MyScreen(
     navController: NavController,
+    myViewModel: MyViewModel = viewModel()
 ) {
     var isSelected by remember { mutableStateOf(false) } // 예시: 활성화/비활성화 상태
     var isGameButtonEnabled by remember { mutableStateOf(true) } // 게임 시작 버튼 활성화/비활성화 상태
-    var isChecked by remember { mutableStateOf(false) }
     var showPotteryCard by remember { mutableStateOf(true) }
 
+    var checkedStates by remember { mutableStateOf(emptyMap<Int, Boolean>()) }
+
+    LaunchedEffect(myViewModel.myCardList) {
+        // myCardList가 변경될 때마다 checkedStates 초기화
+        myViewModel.fetchMyCard()
+        checkedStates = myViewModel.myCardList.associateBy({ it.id }, { false })
+    }
+    Log.d("TEST", myViewModel.myCardList.toString())
     Column(
         modifier = Modifier
             .background(color = Color(0xFFF2F2F2))
@@ -98,26 +118,35 @@ fun MyScreen(
             }
         }
         if (showPotteryCard) {
-            PotteryCard(
-                potteryImage = painterResource(R.drawable.testimg),
-                title = "빗살무늬토기",
-                description = "stringlabelstringlabelstringlabelstringlabelstringlabelstringlabelstringlabelstringlabelstringlabelstringlabelstringlabelstringlabelstringlabelstringlabelstringlabelstringlabelstringlabelstringlabelstringlabel",
-                label = "역사", // 실제 라벨 값으로 변경
-                onCardClick = { navController.navigate(AppNavigationItem.MyDetail.route) },
-                onDelete = { showPotteryCard = false },
-                isChecked = isChecked,
-                onCheckedChange = { isChecked = !isChecked },
-            )
+            LazyColumn {
+                items(myViewModel.myCardList) { card ->
+                    PotteryCard(
+                        potteryImage = card.imageUrl,
+                        title = card.title,
+                        description = card.content,
+                        label = card.category.toString(), // 실제 라벨 값으로 변경
+                        onCardClick = { navController.navigate(AppNavigationItem.MyDetail.route) },
+                        onDelete = { showPotteryCard = false },
+                        isChecked = checkedStates[card.id] ?: false, // 개별 체크 상태 사용
+                        onCheckedChange = {
+//                            isChecked ->
+//                            checkedStates = checkedStates.toMutableMap().apply {
+//                                this[card.id] = isChecked
+//                            }
+                        },
+                    )
+                }
+            }
         }
     }
 }
 
 @Composable
 private fun PotteryCard(
-    potteryImage: Painter,
+    potteryImage: String?,
     title: String,
     description: String,
-    label: String = "역사",
+    label: String? = "역사",
     onDelete: () -> Unit,
     onCardClick: () -> Unit,
     isChecked: Boolean,
@@ -145,8 +174,8 @@ private fun PotteryCard(
                     .weight(1f)
                     .fillMaxHeight() // Set to fillMaxHeight as in MuseumItem
             ) {
-                Image(
-                    painter = potteryImage,
+                AsyncImage(
+                    model = potteryImage,
                     contentDescription = "$title 이미지",
                     contentScale = ContentScale.Crop,
                     modifier = Modifier.fillMaxSize()
@@ -179,7 +208,7 @@ private fun PotteryCard(
                         modifier = Modifier.padding(top = 4.dp)
                     ) {
                         Text(
-                            text = label,
+                            text = label ?: "",
                             fontSize = 12.sp,
                             color = Color(0xFF888800),
                             modifier = Modifier

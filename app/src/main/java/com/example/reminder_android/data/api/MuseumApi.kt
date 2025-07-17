@@ -1,6 +1,6 @@
 package com.example.reminder_android.data.api
 
-import com.example.reminder_android.Major
+import android.bluetooth.BluetoothClass
 import com.example.reminder_android.data.response.FollowMuseumResponse
 import com.example.reminder_android.data.response.SearchMuseumCardResponse
 import okhttp3.MultipartBody
@@ -13,18 +13,18 @@ import retrofit2.http.Query
 import java.util.Locale.Category
 
 interface MuseumApi {
-    @POST("/museums/{museumId}/banner")
+    @POST("/reminder/museums/{museumId}/banner")
     suspend fun upLoadMuseumBannerImage(
         @Path("museumId") museumId: Long,
         @Body image: MultipartBody.Part
     )
 
-    @GET("/museums/{userId}/cards")
+    @GET("/reminder/museums/{userId}/cards")
     suspend fun searchMuseumCard(
         @Path("userId") userId: Int,
-        @Query("category") category: Major
+        @Query("category") category: BluetoothClass.Device.Major?
     ): List<SearchMuseumCardResponse>
 
-    @GET("/museums/followings")
+    @GET("/reminder/museums/followings")
     suspend fun fetchFollowMuseum(): List<FollowMuseumResponse>
 }

@@ -28,6 +28,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -41,9 +45,11 @@ import com.example.reminder_android.R
 
 @Composable
 fun ChatAIDetailScreen(
-    navController: NavController
+    navController: NavController,
+    cardId: Int,
 ) {
     val duDate = listOf(Pair("ddddd", true), Pair("ddddd", false))
+    var input by remember { mutableStateOf("") }
     Column(
         modifier = Modifier
             .background(color = Color(0xFFA1A2A4))
@@ -51,8 +57,8 @@ fun ChatAIDetailScreen(
     ) {
         PotteryChatScreen(
             messages = duDate,
-            currentInput = "ㅇ노리",
-            onInputChange = {},
+            currentInput = input,
+            onInputChange = { input = it },
             onSendClick = {},
             onBackClick = {
                 navController.popBackStack()
@@ -114,7 +120,6 @@ fun PotteryChatScreen(
         // 채팅 메시지 영역
         Column(
             modifier = Modifier
-                .weight(1f)
                 .padding(horizontal = 18.dp)
                 .verticalScroll(rememberScrollState())
         ) {

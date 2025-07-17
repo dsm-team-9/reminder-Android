@@ -18,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -46,10 +47,10 @@ fun SignUpScreen(
     navController: NavController,
     signUpViewModel: SignUpViewModel = viewModel(),
 ) {
-    val phone by remember { mutableStateOf("") }
-    val nickname by remember { mutableStateOf("") }
-    val password by remember { mutableStateOf("") }
-    val passwordCheck by remember { mutableStateOf("") }
+    var phone by remember { mutableStateOf("") }
+    var nickname by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+    var passwordCheck by remember { mutableStateOf("") }
 
     Column(
         modifier = Modifier
@@ -66,24 +67,28 @@ fun SignUpScreen(
         ReminderOutlinedTextField(
             modifier = Modifier.align(Alignment.Start),
             values = phone,
-            titleString = "전화번호"
+            titleString = "전화번호",
+            onValueChange = { phone = it }
         )
         ReminderOutlinedTextField(
             modifier = Modifier.align(Alignment.Start),
             values = nickname,
-            titleString = "닉네임"
+            titleString = "닉네임",
+            onValueChange = { nickname = it }
         )
         ReminderOutlinedTextField(
             modifier = Modifier.align(Alignment.Start),
             values = password,
             titleString = "비밀번호",
-            isPasswordMode = true
+            isPasswordMode = true,
+            onValueChange = { password = it}
         )
         ReminderOutlinedTextField(
             modifier = Modifier.align(Alignment.Start),
             values = passwordCheck,
             titleString = "비밀번호 확인",
-            isPasswordMode = true
+            isPasswordMode = true,
+            onValueChange = { passwordCheck = it}
         )
         Spacer(modifier = Modifier.padding(bottom = 32.dp))
         TextButton(
@@ -91,6 +96,7 @@ fun SignUpScreen(
             onClick = {
                 CoroutineScope(Dispatchers.IO).launch {
                     kotlin.runCatching {
+                        Log.d("TEST", "$nickname\n$phone\n$passwordCheck")
                         ApiProvider.userApi.signUp(
                             SignUpRequest(
                                 name = nickname,

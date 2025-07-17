@@ -14,13 +14,23 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -31,6 +41,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import com.example.reminder_android.MajorPickerInlineWithScrimAndBlur
 import org.jetbrains.annotations.Async
 
 @Composable
@@ -44,7 +55,6 @@ fun HomeExhibitDetailScreen(
     ) {
         TopProfile(title = "ghdrlfehd")
         PotteryDetailCard(
-            userName = "홍길동",
             potteryImage = "",
             title = "빗살무늬 토기",
             onConfirm = {},
@@ -54,7 +64,7 @@ fun HomeExhibitDetailScreen(
 
 @Composable
 fun PotteryDetailCard(
-    userName: String = "홍길동님",
+    modifier: Modifier = Modifier,
     potteryImage: String,
     title: String = "빗살무늬 토기",
     description: String = """
@@ -66,76 +76,109 @@ fun PotteryDetailCard(
     """.trimIndent(),
     onConfirm: () -> Unit
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp)
+    var isEditing by remember { mutableStateOf(false) }
+    var editedDescription by remember { mutableStateOf(description) }
+
+    Box(
+        modifier = modifier
+            .background(color = Color.White, shape = RoundedCornerShape(20.dp))
     ) {
-        // 상단 사용자 정보와 타이틀
-        Spacer(Modifier.height(16.dp))
-
-        // 토기 이미지
-        Card(
-            shape = RoundedCornerShape(16.dp),
-            elevation = CardDefaults.elevatedCardElevation(),
-            modifier = Modifier.fillMaxWidth()
+        Column(
+            modifier = Modifier
+                .padding(16.dp)
         ) {
-            AsyncImage(
-                model = potteryImage,
-                contentDescription = "빗살무늬 토기 이미지",
-                contentScale = ContentScale.Crop,
+            // 상단 사용자 정보와 타이틀
+            Spacer(Modifier.height(16.dp))
+
+            // 토기 이미지
+            Card(
+                shape = RoundedCornerShape(16.dp),
+                elevation = CardDefaults.elevatedCardElevation(),
                 modifier = Modifier
-                    .height(220.dp)
+            ) {
+                AsyncImage(
+                    model = potteryImage,
+                    contentDescription = "빗살무늬 토기 이미지",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .height(220.dp)
+                )
+            }
+
+            Spacer(Modifier.height(12.dp))
+
+            // 정보 구분 라벨
+            Row {
+                Column {
+                    MajorPickerInlineWithScrimAndBlur(
+                        onMajorSelected = {}
+                    )
+
+                    Spacer(Modifier.height(8.dp))
+
+                    // 제목
+                    Text(
+                        text = title,
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.Black
+                    )
+                }
+                Row {
+                    Spacer(modifier = Modifier.weight(1f))
+                    IconButton(
+                        onClick = { isEditing = !isEditing }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Edit,
+                            contentDescription = "수정"
+                        )
+                    }
+                }
+            }
+
+            Spacer(Modifier.height(4.dp))
+
+            // 설명
+            if (isEditing) {
+                TextField(
+                    value = editedDescription,
+                    onValueChange = { editedDescription = it },
+                    modifier = Modifier
+                        .background(color = Color.White)
+                        .fillMaxWidth(),
+                )
+            } else {
+                Text(
+                    text = editedDescription,
+                    fontSize = 14.sp,
+                    color = Color.DarkGray
+                )
+            }
+
+            Spacer(modifier = Modifier.padding(top = 80.dp))
+
+            // 확인 버튼
+            Button(
+                onClick = onConfirm,
+                modifier = Modifier
                     .fillMaxWidth()
-            )
-        }
-
-        Spacer(Modifier.height(12.dp))
-
-        // 정보 구분 라벨
-        Text(
-            text = "역사",
-            modifier = Modifier
-                .background(color = Color(0xFFF9F6DC), shape = RoundedCornerShape(10.dp))
-                .padding(horizontal = 8.dp, vertical = 2.dp),
-            color = Color(0xFF888800),
-            fontSize = 12.sp,
-            fontWeight = FontWeight.Medium
-        )
-
-        Spacer(Modifier.height(8.dp))
-
-        // 제목
-        Text(
-            text = title,
-            fontSize = 20.sp,
-            fontWeight = FontWeight.Bold,
-            color = Color.Black
-        )
-
-        Spacer(Modifier.height(4.dp))
-
-        // 설명
-        Text(
-            text = description,
-            fontSize = 14.sp,
-            color = Color.DarkGray
-        )
-
-        Spacer(Modifier.height(16.dp))
-
-        // 확인 버튼
-        Button(
-            onClick = onConfirm,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(44.dp),
-            shape = RoundedCornerShape(8.dp)
-        ) {
-            Text(
-                text = "확인",
-                fontSize = 16.sp
-            )
+                    .height(44.dp),
+                shape = RoundedCornerShape(8.dp),
+                colors = ButtonColors(
+                    containerColor = Color(0xFF5F6074),
+                    contentColor = Color.White,
+                    disabledContainerColor = Color(0xFF5F6074),
+                    disabledContentColor = Color.White
+                )
+            ) {
+                Text(
+                    text = "확인",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White
+                )
+            }
         }
     }
 }

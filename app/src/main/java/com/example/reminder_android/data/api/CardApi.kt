@@ -1,6 +1,6 @@
 package com.example.reminder_android.data.api
 
-import com.example.reminder_android.Major
+import android.bluetooth.BluetoothClass
 import com.example.reminder_android.data.request.ChangeContentCardRequest
 import com.example.reminder_android.data.request.CreateCardRequest
 import com.example.reminder_android.data.request.TalkAIChatCardRequest
@@ -17,23 +17,23 @@ interface CardApi {
     //카드생성
     //카드내용수정
 
-    @GET("/card")
+    @GET("/reminder/card")
     suspend fun fetchMyCard(
-        @Query("category") category: Major,
+        @Query("category") category: BluetoothClass.Device.Major?,
     ): List<MyCardResponse>
 
-    @PATCH("/api/cards/{cardId}")
+    @PATCH("/reminder/cards/{cardId}")
     suspend fun changeContentCard(
         @Path("cardId") cardId: Int,
         @Body request: ChangeContentCardRequest,
     )
 
-    @POST("/api/cards")
+    @POST("/reminder/card")
     suspend fun createCard(
         @Body request: CreateCardRequest,
     )
 
-    @POST("/api/cards/{cardId}/chat")
+    @POST("/reminder/cards/{cardId}/chat")
     suspend fun talkAIChatCard(
         @Path("cardId") cardId: Int,
         @Body request: TalkAIChatCardRequest,

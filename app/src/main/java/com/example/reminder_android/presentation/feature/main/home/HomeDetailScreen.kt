@@ -1,5 +1,7 @@
 package com.example.reminder_android.presentation.feature.main.home
 
+import android.media.Image
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -17,6 +19,8 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -51,18 +55,28 @@ import androidx.compose.material3.CardColors
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.TextButton
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight.Companion.Bold
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.reminder_android.ToggleMajors
+
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
 
 @Composable
 fun HomeDetailScreen(
     navController: NavController,
+    userId: Int,
+    homeViewModel: HomeViewModel = viewModel()
 ) {
+    LaunchedEffect(Unit) {
+        homeViewModel.searchMuseumCard(userId)
+    }
     var isGameButtonEnabled by remember { mutableStateOf(true) }
 
     Column(
@@ -102,24 +116,29 @@ fun HomeDetailScreen(
                 Text("비활성")
             }
         }
-        PotteryCard(
-            potteryImage = painterResource(R.drawable.testimg),
-            title = "빗살무늬토기",
-            description = "stringlabelstringlabelstringlabelstringlabelstringlabelstringlabelstringlabelstringlabelstringlabelstringlabelstringlabelstringlabelstringlabelstringlabelstringlabel",
-            label = "역사",
-            onDelete = {},
-            onCardClick = {
-                navController.navigate(AppNavigationItem.HomeExhibitsDetail.route)
-            },
-            isChecked = true,
-            onCheckedChange = {},
-        )
+        LazyColumn {
+            Log.d("TEST", homeViewModel.cardList.toString())
+            items(homeViewModel.cardList) {
+                PotteryCard(
+                    potteryImage = it.imageUrl,
+                    title = it.title,
+                    description = it.content,
+                    label = it.category.toString(),
+                    onDelete = {},
+                    onCardClick = {
+                        navController.navigate(AppNavigationItem.HomeExhibitsDetail.route)
+                    },
+                    isChecked = true,
+                    onCheckedChange = {},
+                )
+            }
+        }
     }
 }
 
 @Composable
 private fun PotteryCard(
-    potteryImage: Painter,
+    potteryImage: String,
     title: String,
     description: String,
     label: String = "역사",
@@ -137,11 +156,11 @@ private fun PotteryCard(
         modifier = Modifier
             .padding(12.dp) // Revert padding to 12.dp as in MuseumItem's parent
             .fillMaxWidth()
-            .height(120.dp), // Set height to 120.dp as in MuseumItem
+            .height(140.dp), // Set height to 120.dp as in MuseumItem
         onClick = onCardClick
     ) {
         Row(
-            modifier = Modifier.padding(16.dp),
+            modifier = Modifier.padding(top = 4.dp, start = 13.dp, end = 8.dp),
             verticalAlignment = Alignment.Top
         ) {
             // 이미지 섹션
@@ -150,25 +169,14 @@ private fun PotteryCard(
                     .weight(1f)
                     .fillMaxHeight() // Set to fillMaxHeight as in MuseumItem
             ) {
-                Image(
-                    painter = potteryImage,
+                AsyncImage(
+                    model = potteryImage,
                     contentDescription = "$title 이미지",
                     contentScale = ContentScale.Crop,
                     modifier = Modifier.fillMaxSize()
                 )
                 // 체크마크 아이콘 (옵션)
-                Icon(
-                    imageVector = if (isChecked) Icons.Default.CheckCircle else Icons.Default.CheckCircleOutline,
-                    contentDescription = "선택됨 표시",
-                    tint = if (isChecked) Color(0xFF393e46) else Color.LightGray,
-                    modifier = Modifier
-                        .size(32.dp)
-                        .align(Alignment.TopStart)
-                        .offset(8.dp, 8.dp)
-                        .clickable { onCheckedChange() }
-                )
             }
-
             Spacer(modifier = Modifier.width(16.dp))
 
             // 텍스트 및 액션 섹션
@@ -178,38 +186,32 @@ private fun PotteryCard(
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.Top
                 ) {
                     // 라벨 칩
-                    Text(
-                        text = label,
-                        fontSize = 12.sp,
-                        color = Color(0xFF888800),
-                        modifier = Modifier
-                            .background(Color(0xFFF9F6DC), shape = RoundedCornerShape(10.dp))
-                            .padding(horizontal = 8.dp, vertical = 4.dp)
-                    )
-
-                    // 수정/삭제 버튼
-                    Row {
-                        IconButton(onClick = onDelete) {
-                            Icon(
-                                imageVector = Icons.Default.Delete,
-                                contentDescription = "삭제"
-                            )
-                        }
+                    Column(
+                        modifier = Modifier.padding(top = 4.dp)
+                    ) {
+                        Text(
+                            text = label,
+                            fontSize = 12.sp,
+                            color = Color(0xFF888800),
+                            modifier = Modifier
+                                .background(Color(0xFFF9F6DC), shape = RoundedCornerShape(10.dp))
+                                .padding(horizontal = 4.dp, vertical = 2.dp)
+                        )
+                        Text(
+                            text = title,
+                            fontSize = 15.sp,
+                            fontWeight = Bold,
+                            color = Color.Black
+                        )
                     }
                 }
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                // 제목
-                Text(
-                    text = title,
-                    fontSize = 18.sp,
-                    fontWeight = Bold,
-                    color = Color.Black
-                )
+                // 제
 
                 Spacer(modifier = Modifier.height(6.dp))
 
@@ -219,7 +221,7 @@ private fun PotteryCard(
                     fontSize = 14.sp,
                     color = Color.DarkGray,
                     maxLines = 2,
-                    textAlign = TextAlign.End
+                    textAlign = TextAlign.Start
                 )
             }
         }

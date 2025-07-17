@@ -11,13 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Visibility
-import androidx.compose.material.icons.filled.VisibilityOff
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -28,25 +21,30 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.reminder_android.BottomMenu
 import com.example.reminder_android.ReminderOutlinedTextField
+import com.example.reminder_android.data.request.SignInRequest
 import com.example.reminder_android.presentation.AppNavigationItem
+import com.example.reminder_android.presentations.data.api.ApiProvider
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @Composable
 fun SignInScreen(
     navController: NavController,
 ) {
+    var phone by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+
     Column(
         modifier = Modifier
             .background(color = Color.White)
@@ -66,19 +64,39 @@ fun SignInScreen(
         )
         ReminderOutlinedTextField(
             modifier = Modifier.align(Alignment.Start),
-            values = "",
-            titleString = "전화번호"
+            values = phone,
+            titleString = "전화번호",
+            onValueChange = { phone = it }
         )
         ReminderOutlinedTextField(
             modifier = Modifier.align(Alignment.Start),
-            values = "",
+            values = password,
             titleString = "비밀번호",
             isPasswordMode = true,
+            onValueChange = { password = it }
         )
         Spacer(modifier = Modifier.padding(bottom = 32.dp))
         TextButton(
             modifier = Modifier.background(color = Color(0xFF5F6074), shape = RoundedCornerShape(10.dp)),
-            onClick = { navController.navigate(AppNavigationItem.Main.route) },
+            onClick = {
+                CoroutineScope(Dispatchers.IO).launch {
+                    kotlin.runCatching {
+                        ApiProvider.userApi.signIn(
+                            SignInRequest(
+                                phoneNumber = phone,
+                                password = password,
+                            )
+                        )
+                    }.onSuccess {
+                        ApiProvider.saveToken(it.accessToken) // 토큰 저장
+                        withContext(Dispatchers.Main) {
+                            navController.navigate(AppNavigationItem.Main.route)
+                        }
+                    }.onFailure {
+                        Log.d("TEST", it.toString())
+                    }
+                }
+            },
         ) {
             Text(
                 modifier = Modifier.fillMaxWidth(),

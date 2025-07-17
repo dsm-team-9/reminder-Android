@@ -1,6 +1,7 @@
 package com.example.reminder_android.presentation.feature.main.my
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -23,19 +24,21 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
 import com.example.reminder_android.MajorPickerInlineWithScrimAndBlur
 import com.example.reminder_android.R
 import com.example.reminder_android.presentation.feature.main.home.TopProfile
@@ -43,22 +46,27 @@ import com.example.reminder_android.presentation.feature.main.home.TopProfile
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun MyDetailScreen(
-    navController: NavController
+    navController: NavController,
+    myViewModel: MyViewModel = viewModel()
 ) {
+    LaunchedEffect(Unit) {
+        myViewModel.fetchMyCard()
+    }
+
     Column(
         modifier = Modifier
             .background(color = Color(0xFFF2F2F2))
             .fillMaxSize()
     ) {
+        Log.d("TEST", myViewModel.myCardList.toString())
         TopProfile(
             title = "홍길동"
         )
         PotteryDetailCard(
             modifier = Modifier
-                .weight(1f)
                 .background(color = Color(0xFFD9D9D9))
                 .padding(vertical = 12.dp, horizontal = 20.dp),
-            potteryImage = painterResource(R.drawable.testimg),
+            potteryImage = "",
             onConfirm = { navController.popBackStack() },
         )
     }
@@ -67,7 +75,7 @@ fun MyDetailScreen(
 @Composable
 fun PotteryDetailCard(
     modifier: Modifier = Modifier,
-    potteryImage: Painter,
+    potteryImage: String,
     title: String = "빗살무늬 토기",
     description: String = """
         빗살무늬 토기는 신석기 시대에 사용된 대표적인 토기로,
@@ -98,8 +106,8 @@ fun PotteryDetailCard(
                 elevation = CardDefaults.elevatedCardElevation(),
                 modifier = Modifier
             ) {
-                Image(
-                    painter = potteryImage,
+                AsyncImage(
+                    model = potteryImage,
                     contentDescription = "빗살무늬 토기 이미지",
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
@@ -127,6 +135,7 @@ fun PotteryDetailCard(
                     )
                 }
                 Row {
+                    Spacer(modifier = Modifier.weight(1f))
                     IconButton(
                         onClick = { isEditing = !isEditing }
                     ) {
@@ -157,6 +166,7 @@ fun PotteryDetailCard(
                 )
             }
 
+            Spacer(modifier = Modifier.padding(top = 80.dp))
 
             // 확인 버튼
             Button(
@@ -179,7 +189,6 @@ fun PotteryDetailCard(
                     color = Color.White
                 )
             }
-
         }
     }
 }
