@@ -113,7 +113,7 @@ fun PotteryDetailCard(
             Row {
                 Column {
                     MajorPickerInlineWithScrimAndBlur(
-
+                        onMajorSelected = {}
                     )
 
                     Spacer(Modifier.height(8.dp))

@@ -1,6 +1,5 @@
 package com.example.reminder_android.presentation.feature.main.social
 
-<<<<<<< HEAD
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -42,17 +41,11 @@ import com.example.reminder_android.data.response.SearchUserNameResponse
 import com.example.reminder_android.presentation.feature.main.home.TopProfile
 import com.example.reminder_android.presentations.data.api.ApiProvider
 import kotlinx.coroutines.launch
-=======
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.navigation.NavController
->>>>>>> origin/main
 
 @Composable
 fun SocialScreen(
     navController: NavController
 ) {
-<<<<<<< HEAD
     var searchQuery by remember { mutableStateOf("") }
     var searchResults by remember { mutableStateOf<List<SearchUserNameResponse>>(emptyList()) }
     val coroutineScope = rememberCoroutineScope()
@@ -192,9 +185,3 @@ fun FollowUserRow(
         }
     }
 }
-
-
-=======
-    Text("SocialScreen")
-}
->>>>>>> origin/main

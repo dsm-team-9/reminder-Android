@@ -1,6 +1,5 @@
 package com.example.reminder_android.presentation.feature.main.chat
 
-<<<<<<< HEAD
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -193,11 +192,3 @@ fun PotteryChatScreen(
         }
     }
 }
-=======
-import androidx.compose.runtime.Composable
-
-@Composable
-fun ChatAIDetailScreen() {
-    
-}
->>>>>>> origin/main

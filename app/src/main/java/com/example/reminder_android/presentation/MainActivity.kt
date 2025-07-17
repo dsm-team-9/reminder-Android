@@ -170,7 +170,6 @@ private fun BaseApp() {
                     }
                     composable(AppNavigationItem.UpLoadExhibit.route) {
                         UpLoadExhibit(navController = mainAppNavController)
-                        HomeDetailScreen()
 
                     }
                 }
